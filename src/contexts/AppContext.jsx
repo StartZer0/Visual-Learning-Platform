@@ -89,15 +89,19 @@ const appReducer = (state, action) => {
       return { ...state, leftPanelWidth: action.payload };
     case 'TOGGLE_SIDEBAR':
       return { ...state, sidebarCollapsed: !state.sidebarCollapsed };
+    case 'SHOW_SIDEBAR':
+      return { ...state, sidebarCollapsed: false };
+    case 'HIDE_SIDEBAR':
+      return { ...state, sidebarCollapsed: true };
     case 'LOAD_STATE':
-      // Ensure critical UI state is preserved
+      // Ensure critical UI state is preserved and sidebar defaults to visible
       return {
         ...state,
         ...action.payload,
-        // Preserve sidebar state if not explicitly set in loaded data
-        sidebarCollapsed: action.payload.sidebarCollapsed !== undefined ? action.payload.sidebarCollapsed : state.sidebarCollapsed,
-        leftPanelVisible: action.payload.leftPanelVisible !== undefined ? action.payload.leftPanelVisible : state.leftPanelVisible,
-        rightPanelVisible: action.payload.rightPanelVisible !== undefined ? action.payload.rightPanelVisible : state.rightPanelVisible,
+        // Always default sidebar to visible unless explicitly collapsed
+        sidebarCollapsed: action.payload.sidebarCollapsed === true ? true : false,
+        leftPanelVisible: action.payload.leftPanelVisible !== undefined ? action.payload.leftPanelVisible : true,
+        rightPanelVisible: action.payload.rightPanelVisible !== undefined ? action.payload.rightPanelVisible : true,
       };
     default:
       return state;
@@ -120,22 +124,30 @@ export const AppProvider = ({ children }) => {
     }
   }, []);
 
-  // Save state to localStorage whenever it changes
+  // Save state to localStorage whenever it changes (but debounce it)
   useEffect(() => {
-    // Create a clean state object for saving (exclude file URLs and temporary data)
-    const stateToSave = {
-      ...state,
-      studyMaterials: state.studyMaterials.map(material => {
-        if (material.type === 'pdf' && material.url && material.url.startsWith('blob:')) {
-          // Don't save blob URLs as they're temporary
-          const { url, file, ...cleanMaterial } = material;
-          return cleanMaterial;
-        }
-        return material;
-      })
-    };
+    const timeoutId = setTimeout(() => {
+      // Create a clean state object for saving (exclude file URLs and temporary data)
+      const stateToSave = {
+        ...state,
+        studyMaterials: state.studyMaterials.map(material => {
+          if (material.type === 'pdf' && material.url && material.url.startsWith('blob:')) {
+            // Don't save blob URLs as they're temporary
+            const { url, file, ...cleanMaterial } = material;
+            return cleanMaterial;
+          }
+          return material;
+        })
+      };
 
-    localStorage.setItem('learningPlatformState', JSON.stringify(stateToSave));
+      try {
+        localStorage.setItem('learningPlatformState', JSON.stringify(stateToSave));
+      } catch (error) {
+        console.error('Failed to save state to localStorage:', error);
+      }
+    }, 100); // Debounce saves by 100ms
+
+    return () => clearTimeout(timeoutId);
   }, [state]);
 
   return (
