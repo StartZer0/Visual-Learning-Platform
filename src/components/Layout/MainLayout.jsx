@@ -13,60 +13,62 @@ const MainLayout = () => {
     <div className="h-screen flex flex-col bg-gray-50 dark:bg-gray-900">
       <Header />
 
-      <div className="flex-1 flex overflow-hidden relative">
-        {/* Topic Hierarchy Sidebar */}
-        <div
-          className={`${
-            state.sidebarCollapsed ? 'w-0 opacity-0 pointer-events-none' : 'w-64 opacity-100 pointer-events-auto'
-          } transition-all duration-300 ease-in-out bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 overflow-hidden flex-shrink-0`}
-          style={{
-            minWidth: state.sidebarCollapsed ? '0px' : '256px',
-            maxWidth: state.sidebarCollapsed ? '0px' : '256px',
-            visibility: state.sidebarCollapsed ? 'hidden' : 'visible'
-          }}
-          data-sidebar-collapsed={state.sidebarCollapsed}
-        >
-          <TopicTree />
-        </div>
+      <div className="flex-1 overflow-hidden">
+        <PanelGroup direction="horizontal">
+          {/* Topic Hierarchy Sidebar */}
+          {!state.sidebarCollapsed && (
+            <>
+              <Panel
+                defaultSize={20}
+                minSize={15}
+                maxSize={40}
+                className="bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700"
+              >
+                <TopicTree />
+              </Panel>
+              <PanelResizeHandle className="w-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors cursor-col-resize" />
+            </>
+          )}
 
-        {/* Main Content Area */}
-        <div className="flex-1">
-          <PanelGroup direction="horizontal">
-            {/* Left Panel - Study Materials */}
-            {state.leftPanelVisible && (
-              <>
-                <Panel defaultSize={50} minSize={20}>
+          {/* Main Content Area */}
+          <Panel defaultSize={state.sidebarCollapsed ? 100 : 80} minSize={30}>
+            <PanelGroup direction="horizontal">
+              {/* Left Panel - Study Materials */}
+              {state.leftPanelVisible && (
+                <>
+                  <Panel defaultSize={50} minSize={20}>
+                    <div className="h-full bg-white dark:bg-gray-800">
+                      <StudyPanel />
+                    </div>
+                  </Panel>
+                  <PanelResizeHandle className="w-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors cursor-col-resize" />
+                </>
+              )}
+
+              {/* Right Panel - Visualizations */}
+              {state.rightPanelVisible && (
+                <Panel defaultSize={state.leftPanelVisible ? 50 : 100} minSize={20}>
                   <div className="h-full bg-white dark:bg-gray-800">
-                    <StudyPanel />
+                    <VisualizationPanel />
                   </div>
                 </Panel>
-                <PanelResizeHandle className="w-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors" />
-              </>
-            )}
+              )}
 
-            {/* Right Panel - Visualizations */}
-            {state.rightPanelVisible && (
-              <Panel defaultSize={state.leftPanelVisible ? 50 : 100} minSize={20}>
-                <div className="h-full bg-white dark:bg-gray-800">
-                  <VisualizationPanel />
-                </div>
-              </Panel>
-            )}
-
-            {/* Empty state when both panels are hidden */}
-            {!state.leftPanelVisible && !state.rightPanelVisible && (
-              <Panel defaultSize={100}>
-                <div className="h-full flex items-center justify-center bg-white dark:bg-gray-800">
-                  <div className="text-center">
-                    <div className="text-gray-500 dark:text-gray-400 mb-4">
-                      Both panels are hidden. Use the toggle buttons in the header to show them.
+              {/* Empty state when both panels are hidden */}
+              {!state.leftPanelVisible && !state.rightPanelVisible && (
+                <Panel defaultSize={100}>
+                  <div className="h-full flex items-center justify-center bg-white dark:bg-gray-800">
+                    <div className="text-center">
+                      <div className="text-gray-500 dark:text-gray-400 mb-4">
+                        Both panels are hidden. Use the toggle buttons in the header to show them.
+                      </div>
                     </div>
                   </div>
-                </div>
-              </Panel>
-            )}
-          </PanelGroup>
-        </div>
+                </Panel>
+              )}
+            </PanelGroup>
+          </Panel>
+        </PanelGroup>
       </div>
     </div>
   );

@@ -103,7 +103,8 @@ const StudyPanel = () => {
           id: materialId,
           topicId: state.currentTopic.id,
           type: 'pdf',
-          title: file.name,
+          title: file.name, // Original filename
+          displayName: file.name, // Editable display name
           url: fileUrl,
           filename: filename, // Store backend filename if available
           isPersistent: isPersistent,

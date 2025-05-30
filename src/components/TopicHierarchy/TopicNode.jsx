@@ -3,6 +3,7 @@ import { ChevronRight, ChevronDown, Plus, Edit2, Trash2, FolderOpen, Folder } fr
 import { useApp } from '../../contexts/AppContext';
 import { generateId } from '../../utils/helpers';
 import Button from '../UI/Button';
+import Tooltip from '../UI/Tooltip';
 
 const TopicNode = ({ topic, level = 0 }) => {
   const { state, dispatch } = useApp();
@@ -163,9 +164,16 @@ const TopicNode = ({ topic, level = 0 }) => {
               onClick={(e) => e.stopPropagation()}
             />
           ) : (
-            <span className="flex-1 text-sm font-medium truncate">
-              {topic.title}
-            </span>
+            <Tooltip
+              content={topic.title.length > 20 ? topic.title : null}
+              position="right"
+              delay={500}
+              className="flex-1 min-w-0"
+            >
+              <span className="flex-1 text-sm font-medium truncate block">
+                {topic.title}
+              </span>
+            </Tooltip>
           )}
         </div>
 

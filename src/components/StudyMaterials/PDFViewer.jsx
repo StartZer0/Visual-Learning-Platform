@@ -4,6 +4,7 @@ import { ChevronLeft, ChevronRight, ZoomIn, ZoomOut, Download, Trash2, Upload } 
 import { useApp } from '../../contexts/AppContext';
 import apiService from '../../services/api';
 import Button from '../UI/Button';
+import EditablePDFTitle from './EditablePDFTitle';
 
 // Set up PDF.js worker
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
@@ -136,6 +137,10 @@ const PDFViewer = ({ material }) => {
         const updatedMaterial = {
           ...material,
           title: file.name, // Update title to new filename
+          // Keep existing displayName if it was customized, otherwise use new filename
+          displayName: material.displayName && material.displayName !== material.title
+            ? material.displayName
+            : file.name,
           url: fileUrl,
           filename: filename,
           isPersistent: isPersistent,
@@ -171,11 +176,9 @@ const PDFViewer = ({ material }) => {
     <div className="panel">
       <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
         <div className="flex-1 min-w-0">
-          <h3 className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
-            {material.title}
-          </h3>
+          <EditablePDFTitle material={material} />
           {numPages && (
-            <p className="text-xs text-gray-500 dark:text-gray-400">
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
               Page {pageNumber} of {numPages}
             </p>
           )}
