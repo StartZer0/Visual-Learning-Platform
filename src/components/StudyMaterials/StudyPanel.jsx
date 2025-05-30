@@ -5,7 +5,7 @@ import { generateId } from '../../utils/helpers';
 import apiService from '../../services/api';
 import Button from '../UI/Button';
 import Modal from '../UI/Modal';
-import RichTextEditor from '../UI/RichTextEditor';
+import SimpleRichTextEditor from '../UI/SimpleRichTextEditor';
 import PDFViewer from './PDFViewer';
 import TextContent from './TextContent';
 import LinkContent from './LinkContent';
@@ -279,7 +279,7 @@ const StudyPanel = () => {
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Content
               </label>
-              <RichTextEditor
+              <SimpleRichTextEditor
                 value={newItemContent}
                 onChange={setNewItemContent}
                 placeholder="Start writing your content here..."

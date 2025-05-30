@@ -3,7 +3,7 @@ import { Edit2, Save, X, Trash2 } from 'lucide-react';
 import { useApp } from '../../contexts/AppContext';
 import Button from '../UI/Button';
 import MathText from '../UI/MathText';
-import RichTextEditor from '../UI/RichTextEditor';
+import SimpleRichTextEditor from '../UI/SimpleRichTextEditor';
 import apiService from '../../services/api';
 
 const TextContent = ({ material }) => {
@@ -117,7 +117,7 @@ const TextContent = ({ material }) => {
       <div className="p-4">
         {isEditing ? (
           <div className="space-y-4">
-            <RichTextEditor
+            <SimpleRichTextEditor
               value={editContent}
               onChange={setEditContent}
               onSave={handleSave}

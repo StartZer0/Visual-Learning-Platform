@@ -4,7 +4,7 @@ import { useApp } from '../../contexts/AppContext';
 import { generateId } from '../../utils/helpers';
 import Button from '../UI/Button';
 import Modal from '../UI/Modal';
-import RichTextEditor from '../UI/RichTextEditor';
+import SimpleRichTextEditor from '../UI/SimpleRichTextEditor';
 import VisualizationBlock from './VisualizationBlock';
 import CodeEditor from './CodeEditor';
 import NoteBlock from './NoteBlock';
@@ -220,7 +220,7 @@ const VisualizationPanel = () => {
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Content
               </label>
-              <RichTextEditor
+              <SimpleRichTextEditor
                 value={newNoteContent}
                 onChange={setNewNoteContent}
                 placeholder="Start writing your note here..."

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Edit2, Trash2, Save, X, StickyNote } from 'lucide-react';
 import { useApp } from '../../contexts/AppContext';
 import Button from '../UI/Button';
-import RichTextEditor from '../UI/RichTextEditor';
+import SimpleRichTextEditor from '../UI/SimpleRichTextEditor';
 import apiService from '../../services/api';
 
 const NoteBlock = ({ note, index, total }) => {
@@ -21,7 +21,7 @@ const NoteBlock = ({ note, index, total }) => {
   const handleSave = async (content = editContent) => {
     try {
       setIsSaving(true);
-      
+
       const updatedNote = {
         ...note,
         title: editTitle,
@@ -133,7 +133,7 @@ const NoteBlock = ({ note, index, total }) => {
       <div className="p-4">
         {isEditing ? (
           <div className="space-y-4">
-            <RichTextEditor
+            <SimpleRichTextEditor
               value={editContent}
               onChange={setEditContent}
               onSave={handleSave}
@@ -158,7 +158,7 @@ const NoteBlock = ({ note, index, total }) => {
         ) : (
           <div className="prose prose-sm dark:prose-invert max-w-none">
             {note.content ? (
-              <div 
+              <div
                 className="rich-text-content"
                 dangerouslySetInnerHTML={{ __html: note.content }}
               />

@@ -1,9 +1,11 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
 import { Upload, Image as ImageIcon, Save, Loader2 } from 'lucide-react';
 import apiService from '../../services/api';
 import Button from './Button';
+
+// Import React-Quill directly
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 const RichTextEditor = ({
   value = '',
@@ -207,7 +209,7 @@ const RichTextEditor = ({
       </div>
 
       {/* Rich Text Editor */}
-      <div className="quill-wrapper">
+      <div className="quill-wrapper border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
         <ReactQuill
           ref={quillRef}
           theme="snow"
