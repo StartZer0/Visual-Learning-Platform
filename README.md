@@ -7,11 +7,14 @@ A responsive web-based interactive learning platform that allows users to create
 ### 🏗️ Hierarchical Topic Organization
 - Create main topics, subtopics, and sub-subtopics
 - Tree-like navigation with expand/collapse functionality
+- **Collapsible sidebar**: Toggle the entire topics panel with a button
 - Easy topic management with add, edit, and delete operations
 
 ### 📚 Study Materials Panel (Left Panel)
 - **PDF Upload & Viewer**: Upload and view PDF files with zoom, navigation controls
-- **Text Content**: Add and edit rich text content
+- **Text Content**: Add and edit rich text content with **LaTeX math formula support**
+  - Inline math: `$E = mc^2$` renders as $E = mc^2$
+  - Block math: `$$KE = \frac{1}{2}mv^2$$` renders as centered formula
 - **External Links**: Add YouTube videos, websites, and other external resources
 
 ### 🎨 Interactive Visualizations Panel (Right Panel)
@@ -70,10 +73,34 @@ This project is configured for easy deployment to Netlify:
 3. **Create Visualizations**: Add interactive HTML/CSS/JavaScript visualizations in the right panel
 4. **Save Your Work**: Use the "Save" button to export your learning module
 
+### Using Math Formulas
+
+The platform supports LaTeX math formulas in text content:
+
+**Inline Math** (within text):
+```
+The kinetic energy formula is $KE = \frac{1}{2}mv^2$ where m is mass.
+```
+
+**Block Math** (centered, standalone):
+```
+$$E = mc^2$$
+$$\int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi}$$
+```
+
+**Common Examples**:
+- Fractions: `$\frac{1}{2}$`, `$\frac{a}{b}$`
+- Superscripts: `$x^2$`, `$e^{-x}$`
+- Subscripts: `$H_2O$`, `$x_1$`
+- Greek letters: `$\alpha$`, `$\beta$`, `$\pi$`
+- Integrals: `$\int$`, `$\sum$`
+- Square roots: `$\sqrt{x}$`, `$\sqrt[3]{x}$`
+
 ## Technology Stack
 
 - **Frontend**: React 19, Tailwind CSS
 - **Code Editor**: Monaco Editor (VS Code editor)
+- **Math Rendering**: KaTeX for LaTeX formula support
 - **PDF Handling**: react-pdf
 - **Icons**: Lucide React
 - **Build Tool**: Vite
