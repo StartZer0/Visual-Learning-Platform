@@ -5,7 +5,6 @@ import Header from './Header';
 import TopicTree from '../TopicHierarchy/TopicTree';
 import StudyPanel from '../StudyMaterials/StudyPanel';
 import VisualizationPanel from '../Visualizations/VisualizationPanel';
-import ProductionTestPanel from '../Debug/ProductionTestPanel';
 
 const MainLayout = () => {
   const { state } = useApp();
@@ -69,9 +68,6 @@ const MainLayout = () => {
           </PanelGroup>
         </div>
       </div>
-
-      {/* Production Test Panel - only show in development or when needed */}
-      <ProductionTestPanel />
     </div>
   );
 };
