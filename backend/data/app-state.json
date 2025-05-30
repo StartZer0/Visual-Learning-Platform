@@ -6,7 +6,7 @@
       "children": [
         {
           "id": "mbafuz536rps9gnkz0x",
-          "title": "New Subtopic",
+          "title": "ssss",
           "children": [
             {
               "id": "mbafuzvj9jj7kksziuo",
@@ -26,11 +26,11 @@
   ],
   "currentTopic": {
     "id": "mbafuwe2acp4c9x3rba",
-    "title": "New Topic",
+    "title": "ddd",
     "children": [
       {
         "id": "mbafuz536rps9gnkz0x",
-        "title": "New Subtopic",
+        "title": "ssss",
         "children": [
           {
             "id": "mbafuzvj9jj7kksziuo",
@@ -57,9 +57,27 @@
       "isPersistent": true,
       "needsReupload": false,
       "createdAt": "2025-05-30T06:45:32.521Z"
+    },
+    {
+      "id": "mbagecov90qow1trblu",
+      "topicId": "mbafuz536rps9gnkz0x",
+      "type": "pdf",
+      "title": "48b2b323-290b-496c-a1a8-e60c440b27c2.pdf",
+      "filename": "448f7a67-78d3-449b-a634-a8d52d8f95c6-48b2b323-290b-496c-a1a8-e60c440b27c2.pdf",
+      "isPersistent": true,
+      "needsReupload": false,
+      "createdAt": "2025-05-30T07:00:21.085Z"
     }
   ],
-  "visualizations": [],
+  "visualizations": [
+    {
+      "id": "mbagemsq0gn4rdxl4lab",
+      "topicId": "mbafuwe2acp4c9x3rba",
+      "title": "s",
+      "code": "This is part",
+      "createdAt": "2025-05-30T07:00:34.154Z"
+    }
+  ],
   "contentLinks": [],
   "leftPanelVisible": true,
   "rightPanelVisible": true,
