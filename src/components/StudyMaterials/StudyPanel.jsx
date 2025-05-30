@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Plus, FileText, Link, Upload } from 'lucide-react';
 import { useApp } from '../../contexts/AppContext';
 import { generateId } from '../../utils/helpers';
+import apiService from '../../services/api';
 import Button from '../UI/Button';
 import Modal from '../UI/Modal';
 import PDFViewer from './PDFViewer';
@@ -72,7 +73,31 @@ const StudyPanel = () => {
     if (file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf')) {
       try {
         const materialId = generateId();
-        const fileUrl = URL.createObjectURL(file);
+
+        // Check if backend is available
+        const backendAvailable = await apiService.checkHealth();
+
+        let fileUrl, isPersistent, filename;
+
+        if (backendAvailable) {
+          // Upload to backend for persistent storage
+          try {
+            const uploadResult = await apiService.uploadFile(file, materialId);
+            fileUrl = apiService.getFileUrl(uploadResult.filename);
+            filename = uploadResult.filename;
+            isPersistent = true;
+            console.log('PDF uploaded to backend:', file.name);
+          } catch (backendError) {
+            console.warn('Backend upload failed, using fallback:', backendError);
+            fileUrl = URL.createObjectURL(file);
+            isPersistent = false;
+          }
+        } else {
+          // Fallback to blob URL if backend not available
+          console.warn('Backend not available, using blob URL');
+          fileUrl = URL.createObjectURL(file);
+          isPersistent = false;
+        }
 
         const newPDF = {
           id: materialId,
@@ -80,14 +105,19 @@ const StudyPanel = () => {
           type: 'pdf',
           title: file.name,
           url: fileUrl,
-          file: file, // Keep the file object for now
-          isPersistent: false, // Simplified - no persistent storage for now
-          needsReupload: false, // Don't mark as needing reupload initially
+          filename: filename, // Store backend filename if available
+          isPersistent: isPersistent,
+          needsReupload: !isPersistent,
           createdAt: new Date().toISOString(),
         };
 
         dispatch({ type: 'ADD_STUDY_MATERIAL', payload: newPDF });
-        console.log('PDF uploaded successfully:', file.name);
+
+        if (isPersistent) {
+          alert(`✅ PDF "${file.name}" uploaded successfully and saved permanently!`);
+        } else {
+          alert(`⚠️ PDF "${file.name}" uploaded (will need re-upload after refresh - start backend for permanent storage)`);
+        }
       } catch (error) {
         console.error('Error uploading PDF:', error);
         alert('Failed to upload PDF file. Please try again.');

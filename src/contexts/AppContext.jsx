@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useReducer, useEffect } from 'react';
+import apiService from '../services/api';
 
 const AppContext = createContext();
 
@@ -161,36 +162,74 @@ const appReducer = (state, action) => {
 export const AppProvider = ({ children }) => {
   const [state, dispatch] = useReducer(appReducer, initialState);
 
-  // Load state from localStorage on mount
+  // Load state from backend or localStorage on mount
   useEffect(() => {
-    const savedState = localStorage.getItem('learningPlatformState');
-    if (savedState) {
+    const loadInitialState = async () => {
       try {
-        const parsedState = JSON.parse(savedState);
-        dispatch({ type: 'LOAD_STATE', payload: parsedState });
+        // Try to load from backend first
+        const backendAvailable = await apiService.checkHealth();
+        if (backendAvailable) {
+          try {
+            const backendState = await apiService.loadState();
+            console.log('Loaded state from backend');
+            dispatch({ type: 'LOAD_STATE', payload: backendState });
+            return;
+          } catch (backendError) {
+            console.warn('Failed to load from backend, trying localStorage:', backendError);
+          }
+        }
+
+        // Fallback to localStorage
+        const savedState = localStorage.getItem('learningPlatformState');
+        if (savedState) {
+          const parsedState = JSON.parse(savedState);
+          console.log('Loaded state from localStorage');
+          dispatch({ type: 'LOAD_STATE', payload: parsedState });
+        }
       } catch (error) {
         console.error('Failed to load saved state:', error);
       }
-    }
+    };
+
+    loadInitialState();
   }, []);
 
   // Simplified: No complex file restoration for now
 
-  // Save state to localStorage whenever it changes (but debounce it)
+  // Save state to backend and localStorage whenever it changes (but debounce it)
   useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      // Create a clean state object for saving (exclude PDFs for now to avoid reupload issues)
+    const timeoutId = setTimeout(async () => {
+      // Create a clean state object for saving
       const stateToSave = {
         ...state,
-        studyMaterials: state.studyMaterials.filter(material => material.type !== 'pdf')
+        studyMaterials: state.studyMaterials.map(material => {
+          if (material.type === 'pdf') {
+            // For PDFs, save metadata but not blob URLs
+            const { url, file, ...cleanMaterial } = material;
+            return cleanMaterial;
+          }
+          return material;
+        })
       };
 
+      // Try to save to backend first
+      try {
+        const backendAvailable = await apiService.checkHealth();
+        if (backendAvailable) {
+          await apiService.saveState(stateToSave);
+          console.log('State saved to backend');
+        }
+      } catch (backendError) {
+        console.warn('Failed to save to backend:', backendError);
+      }
+
+      // Always save to localStorage as backup
       try {
         localStorage.setItem('learningPlatformState', JSON.stringify(stateToSave));
       } catch (error) {
         console.error('Failed to save state to localStorage:', error);
       }
-    }, 100); // Debounce saves by 100ms
+    }, 500); // Debounce saves by 500ms
 
     return () => clearTimeout(timeoutId);
   }, [state]);
