@@ -20,8 +20,10 @@ A responsive web-based interactive learning platform that allows users to create
 ### 🎨 Interactive Visualizations Panel (Right Panel)
 - **Live Code Editor**: Monaco Editor with syntax highlighting
 - **Real-time Preview**: Execute HTML/CSS/JavaScript code instantly
+- **Resizable Visualizations**: Drag to resize both width and height of visualization blocks
 - **Multiple Visualizations**: Stack multiple code blocks per topic
 - **Reordering Controls**: Move visualizations up/down with arrow buttons
+- **Reset Size**: Restore default dimensions with one click
 
 ### 🎯 User Experience
 - **Responsive Design**: Works on desktop, tablet, and mobile
@@ -95,6 +97,16 @@ $$\int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi}$$
 - Greek letters: `$\alpha$`, `$\beta$`, `$\pi$`
 - Integrals: `$\int$`, `$\sum$`
 - Square roots: `$\sqrt{x}$`, `$\sqrt[3]{x}$`
+
+### Resizing Visualizations
+
+You can customize the size of visualization blocks to fit your content:
+
+1. **Drag to Resize**: Grab the resize handle (triangle) in the bottom-right corner of any visualization
+2. **Live Feedback**: See dimensions in real-time as you resize
+3. **Reset Size**: Click the maximize button (⛶) to restore default size (600×300px)
+4. **Constraints**: Minimum size is 300px width × 200px height
+5. **Persistence**: Size settings are automatically saved
 
 ## Technology Stack
 
