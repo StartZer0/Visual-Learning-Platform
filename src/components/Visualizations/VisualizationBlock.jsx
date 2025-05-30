@@ -49,6 +49,10 @@ const VisualizationBlock = ({ visualization, index, total }) => {
             height: dimensions.height,
           },
         });
+        // Re-execute code after resize is complete
+        setTimeout(() => {
+          executeCode();
+        }, 100);
       }
     };
 
@@ -79,9 +83,10 @@ const VisualizationBlock = ({ visualization, index, total }) => {
       // Create a sandboxed iframe for code execution
       const iframe = document.createElement('iframe');
       iframe.style.width = '100%';
-      iframe.style.height = `${dimensions.height}px`;
+      iframe.style.height = '100%';
       iframe.style.border = 'none';
       iframe.style.borderRadius = '8px';
+      iframe.style.display = 'block';
 
       previewRef.current.appendChild(iframe);
 
@@ -98,6 +103,9 @@ const VisualizationBlock = ({ visualization, index, total }) => {
               padding: 16px;
               font-family: system-ui, sans-serif;
               background: white;
+              width: 100%;
+              height: 100vh;
+              overflow: auto;
             }
             * { box-sizing: border-box; }
           </style>
@@ -303,17 +311,18 @@ const VisualizationBlock = ({ visualization, index, total }) => {
             ) : (
               <div
                 ref={resizeRef}
-                className="visualization-container relative bg-gray-50 dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700"
+                className="visualization-container relative bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700"
                 style={{
                   width: `${dimensions.width}px`,
+                  height: `${dimensions.height}px`,
                   maxWidth: '100%',
-                  minWidth: '300px'
+                  minWidth: '300px',
+                  minHeight: '200px'
                 }}
               >
                 <div
                   ref={previewRef}
-                  className="w-full overflow-hidden rounded-lg"
-                  style={{ height: `${dimensions.height}px` }}
+                  className="w-full h-full overflow-hidden rounded-lg"
                 />
 
                 {/* Resize Handle */}
