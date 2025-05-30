@@ -15,9 +15,15 @@ const MainLayout = () => {
 
       <div className="flex-1 flex overflow-hidden relative">
         {/* Topic Hierarchy Sidebar */}
-        <div className={`${
-          state.sidebarCollapsed ? 'w-0' : 'w-64'
-        } transition-all duration-300 ease-in-out bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 overflow-hidden`}>
+        <div
+          className={`${
+            state.sidebarCollapsed ? 'w-0 opacity-0' : 'w-64 opacity-100'
+          } transition-all duration-300 ease-in-out bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 overflow-hidden flex-shrink-0`}
+          style={{
+            minWidth: state.sidebarCollapsed ? '0px' : '256px',
+            maxWidth: state.sidebarCollapsed ? '0px' : '256px'
+          }}
+        >
           <TopicTree />
         </div>
 

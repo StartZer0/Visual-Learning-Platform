@@ -19,7 +19,7 @@ const initialState = {
   leftPanelVisible: true,
   rightPanelVisible: true,
   leftPanelWidth: 50,
-  sidebarCollapsed: false,
+  sidebarCollapsed: false, // ALWAYS start with sidebar visible
 };
 
 const appReducer = (state, action) => {
@@ -94,12 +94,12 @@ const appReducer = (state, action) => {
     case 'HIDE_SIDEBAR':
       return { ...state, sidebarCollapsed: true };
     case 'LOAD_STATE':
-      // Load state but preserve defaults for undefined values
+      // Load state but ALWAYS start with sidebar visible for better UX
       return {
         ...state,
         ...action.payload,
-        // Use loaded values or fall back to current state
-        sidebarCollapsed: action.payload.sidebarCollapsed !== undefined ? action.payload.sidebarCollapsed : state.sidebarCollapsed,
+        // FORCE sidebar to be visible on load for better user experience
+        sidebarCollapsed: false,
         leftPanelVisible: action.payload.leftPanelVisible !== undefined ? action.payload.leftPanelVisible : state.leftPanelVisible,
         rightPanelVisible: action.payload.rightPanelVisible !== undefined ? action.payload.rightPanelVisible : state.rightPanelVisible,
       };
