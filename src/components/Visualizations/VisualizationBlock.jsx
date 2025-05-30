@@ -282,13 +282,43 @@ const VisualizationBlock = ({ visualization, index, total }) => {
       <div className="p-4">
         {isEditing || showCode ? (
           <div className="space-y-4">
-            <CodeEditor
-              value={editCode}
-              onChange={setEditCode}
-              language="html"
-              height="300px"
-              readOnly={!isEditing}
-            />
+            <div
+              ref={isEditing ? resizeRef : null}
+              className="relative visualization-container bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
+              style={{
+                width: `${dimensions.width}px`,
+                maxWidth: '100%',
+                minWidth: '300px',
+                minHeight: '200px'
+              }}
+            >
+              <CodeEditor
+                value={editCode}
+                onChange={setEditCode}
+                language="html"
+                height={isEditing ? `${Math.max(200, dimensions.height - 40)}px` : "300px"}
+                readOnly={!isEditing}
+              />
+
+              {isEditing && (
+                <>
+                  {/* Resize Handle for editing mode */}
+                  <div
+                    className="resize-handle"
+                    onMouseDown={(e) => {
+                      e.preventDefault();
+                      setIsResizing(true);
+                    }}
+                    title="Drag to resize code editor"
+                  />
+
+                  {/* Dimension indicator */}
+                  <div className="absolute bottom-1 left-1 text-xs text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 px-1 rounded">
+                    {dimensions.width} × {dimensions.height}
+                  </div>
+                </>
+              )}
+            </div>
             {isEditing && (
               <div className="flex justify-end space-x-2">
                 <Button variant="outline" onClick={handleCancel}>

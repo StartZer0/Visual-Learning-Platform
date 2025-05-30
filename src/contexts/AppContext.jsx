@@ -90,7 +90,15 @@ const appReducer = (state, action) => {
     case 'TOGGLE_SIDEBAR':
       return { ...state, sidebarCollapsed: !state.sidebarCollapsed };
     case 'LOAD_STATE':
-      return { ...state, ...action.payload };
+      // Ensure critical UI state is preserved
+      return {
+        ...state,
+        ...action.payload,
+        // Preserve sidebar state if not explicitly set in loaded data
+        sidebarCollapsed: action.payload.sidebarCollapsed !== undefined ? action.payload.sidebarCollapsed : state.sidebarCollapsed,
+        leftPanelVisible: action.payload.leftPanelVisible !== undefined ? action.payload.leftPanelVisible : state.leftPanelVisible,
+        rightPanelVisible: action.payload.rightPanelVisible !== undefined ? action.payload.rightPanelVisible : state.rightPanelVisible,
+      };
     default:
       return state;
   }
@@ -114,7 +122,20 @@ export const AppProvider = ({ children }) => {
 
   // Save state to localStorage whenever it changes
   useEffect(() => {
-    localStorage.setItem('learningPlatformState', JSON.stringify(state));
+    // Create a clean state object for saving (exclude file URLs and temporary data)
+    const stateToSave = {
+      ...state,
+      studyMaterials: state.studyMaterials.map(material => {
+        if (material.type === 'pdf' && material.url && material.url.startsWith('blob:')) {
+          // Don't save blob URLs as they're temporary
+          const { url, file, ...cleanMaterial } = material;
+          return cleanMaterial;
+        }
+        return material;
+      })
+    };
+
+    localStorage.setItem('learningPlatformState', JSON.stringify(stateToSave));
   }, [state]);
 
   return (
