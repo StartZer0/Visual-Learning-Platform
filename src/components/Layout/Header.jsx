@@ -7,6 +7,13 @@ import ThemeToggle from '../UI/ThemeToggle';
 const Header = () => {
   const { state, dispatch } = useApp();
 
+  // Production-safe sidebar toggle handler
+  const handleSidebarToggle = React.useCallback((e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    dispatch({ type: 'TOGGLE_SIDEBAR' });
+  }, [dispatch]);
+
   const handleSave = () => {
     const dataStr = JSON.stringify(state, null, 2);
     const dataBlob = new Blob([dataStr], { type: 'application/json' });
@@ -51,9 +58,9 @@ const Header = () => {
           <Button
             variant="primary"
             size="sm"
-            onClick={() => dispatch({ type: 'TOGGLE_SIDEBAR' })}
+            onClick={handleSidebarToggle}
             icon={<Menu className="h-4 w-4" />}
-            title="Toggle Topics Sidebar"
+            title={`${state.sidebarCollapsed ? 'Show' : 'Hide'} Topics Sidebar`}
           >
             Topics
           </Button>

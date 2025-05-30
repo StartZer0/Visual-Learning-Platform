@@ -22,7 +22,7 @@ const TopicNode = ({ topic, level = 0 }) => {
     });
   };
 
-  const handleAddSubtopic = () => {
+  const handleAddSubtopic = React.useCallback(() => {
     const newSubtopic = {
       id: generateId(),
       title: 'New Subtopic',
@@ -39,25 +39,33 @@ const TopicNode = ({ topic, level = 0 }) => {
 
     dispatch({ type: 'UPDATE_TOPIC', payload: updatedTopic });
     setIsExpanded(true);
-  };
+  }, [topic, dispatch]);
 
-  const handleEdit = () => {
+  const handleEdit = React.useCallback(() => {
     if (isEditing) {
-      dispatch({
-        type: 'UPDATE_TOPIC',
-        payload: { ...topic, title: editTitle }
-      });
+      if (editTitle.trim() !== '') {
+        dispatch({
+          type: 'UPDATE_TOPIC',
+          payload: { ...topic, title: editTitle.trim() }
+        });
+      } else {
+        setEditTitle(topic.title); // Reset to original if empty
+      }
       setIsEditing(false);
     } else {
       setIsEditing(true);
     }
-  };
+  }, [isEditing, editTitle, topic, dispatch]);
 
-  const handleDelete = () => {
-    if (window.confirm(`Are you sure you want to delete "${topic.title}" and all its subtopics?`)) {
+  const handleDelete = React.useCallback(() => {
+    const confirmMessage = topic.children && topic.children.length > 0
+      ? `Are you sure you want to delete "${topic.title}" and all its ${topic.children.length} subtopic(s)?`
+      : `Are you sure you want to delete "${topic.title}"?`;
+
+    if (window.confirm(confirmMessage)) {
       dispatch({ type: 'DELETE_TOPIC', payload: topic.id });
     }
-  };
+  }, [topic, dispatch]);
 
   const handleSelect = () => {
     dispatch({ type: 'SET_CURRENT_TOPIC', payload: topic });

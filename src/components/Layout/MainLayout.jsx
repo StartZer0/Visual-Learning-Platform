@@ -5,6 +5,7 @@ import Header from './Header';
 import TopicTree from '../TopicHierarchy/TopicTree';
 import StudyPanel from '../StudyMaterials/StudyPanel';
 import VisualizationPanel from '../Visualizations/VisualizationPanel';
+import ProductionTestPanel from '../Debug/ProductionTestPanel';
 
 const MainLayout = () => {
   const { state } = useApp();
@@ -17,12 +18,14 @@ const MainLayout = () => {
         {/* Topic Hierarchy Sidebar */}
         <div
           className={`${
-            state.sidebarCollapsed ? 'w-0 opacity-0' : 'w-64 opacity-100'
+            state.sidebarCollapsed ? 'w-0 opacity-0 pointer-events-none' : 'w-64 opacity-100 pointer-events-auto'
           } transition-all duration-300 ease-in-out bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 overflow-hidden flex-shrink-0`}
           style={{
             minWidth: state.sidebarCollapsed ? '0px' : '256px',
-            maxWidth: state.sidebarCollapsed ? '0px' : '256px'
+            maxWidth: state.sidebarCollapsed ? '0px' : '256px',
+            visibility: state.sidebarCollapsed ? 'hidden' : 'visible'
           }}
+          data-sidebar-collapsed={state.sidebarCollapsed}
         >
           <TopicTree />
         </div>
@@ -65,9 +68,10 @@ const MainLayout = () => {
             )}
           </PanelGroup>
         </div>
-
-
       </div>
+
+      {/* Production Test Panel - only show in development or when needed */}
+      <ProductionTestPanel />
     </div>
   );
 };

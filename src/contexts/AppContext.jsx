@@ -29,16 +29,51 @@ const appReducer = (state, action) => {
     case 'ADD_TOPIC':
       return { ...state, topics: [...state.topics, action.payload] };
     case 'UPDATE_TOPIC':
+      // Recursive function to update topics and sub-topics
+      const updateTopicRecursively = (topics, updatedTopic) => {
+        return topics.map(topic => {
+          if (topic.id === updatedTopic.id) {
+            return updatedTopic;
+          }
+          if (topic.children && topic.children.length > 0) {
+            return {
+              ...topic,
+              children: updateTopicRecursively(topic.children, updatedTopic)
+            };
+          }
+          return topic;
+        });
+      };
+
       return {
         ...state,
-        topics: state.topics.map(topic =>
-          topic.id === action.payload.id ? action.payload : topic
-        ),
+        topics: updateTopicRecursively(state.topics, action.payload),
       };
     case 'DELETE_TOPIC':
+      // Recursive function to delete topics and sub-topics
+      const deleteTopicRecursively = (topics, topicIdToDelete) => {
+        return topics
+          .filter(topic => topic.id !== topicIdToDelete)
+          .map(topic => {
+            if (topic.children && topic.children.length > 0) {
+              return {
+                ...topic,
+                children: deleteTopicRecursively(topic.children, topicIdToDelete)
+              };
+            }
+            return topic;
+          });
+      };
+
+      const newTopics = deleteTopicRecursively(state.topics, action.payload);
+
+      // If the deleted topic was the current topic, clear it
+      const newCurrentTopic = state.currentTopic?.id === action.payload ? null : state.currentTopic;
+
       return {
         ...state,
-        topics: state.topics.filter(topic => topic.id !== action.payload),
+        topics: newTopics,
+        currentTopic: newCurrentTopic,
       };
     case 'SET_CURRENT_TOPIC':
       return { ...state, currentTopic: action.payload };
@@ -94,15 +129,22 @@ const appReducer = (state, action) => {
     case 'HIDE_SIDEBAR':
       return { ...state, sidebarCollapsed: true };
     case 'LOAD_STATE':
-      // Load state but ALWAYS start with sidebar visible for better UX
-      return {
+      // Load state with proper fallbacks - don't force sidebar state in production
+      const loadedState = {
         ...state,
         ...action.payload,
-        // FORCE sidebar to be visible on load for better user experience
-        sidebarCollapsed: false,
         leftPanelVisible: action.payload.leftPanelVisible !== undefined ? action.payload.leftPanelVisible : state.leftPanelVisible,
         rightPanelVisible: action.payload.rightPanelVisible !== undefined ? action.payload.rightPanelVisible : state.rightPanelVisible,
       };
+
+      // Only force sidebar visible if it's undefined in loaded state (first time load)
+      if (action.payload.sidebarCollapsed === undefined) {
+        loadedState.sidebarCollapsed = false;
+      } else {
+        loadedState.sidebarCollapsed = action.payload.sidebarCollapsed;
+      }
+
+      return loadedState;
     default:
       return state;
   }
