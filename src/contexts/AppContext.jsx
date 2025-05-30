@@ -94,14 +94,14 @@ const appReducer = (state, action) => {
     case 'HIDE_SIDEBAR':
       return { ...state, sidebarCollapsed: true };
     case 'LOAD_STATE':
-      // Ensure critical UI state is preserved and sidebar defaults to visible
+      // Load state but preserve defaults for undefined values
       return {
         ...state,
         ...action.payload,
-        // Always default sidebar to visible unless explicitly collapsed
-        sidebarCollapsed: action.payload.sidebarCollapsed === true ? true : false,
-        leftPanelVisible: action.payload.leftPanelVisible !== undefined ? action.payload.leftPanelVisible : true,
-        rightPanelVisible: action.payload.rightPanelVisible !== undefined ? action.payload.rightPanelVisible : true,
+        // Use loaded values or fall back to current state
+        sidebarCollapsed: action.payload.sidebarCollapsed !== undefined ? action.payload.sidebarCollapsed : state.sidebarCollapsed,
+        leftPanelVisible: action.payload.leftPanelVisible !== undefined ? action.payload.leftPanelVisible : state.leftPanelVisible,
+        rightPanelVisible: action.payload.rightPanelVisible !== undefined ? action.payload.rightPanelVisible : state.rightPanelVisible,
       };
     default:
       return state;
@@ -127,14 +127,14 @@ export const AppProvider = ({ children }) => {
   // Save state to localStorage whenever it changes (but debounce it)
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      // Create a clean state object for saving (exclude file URLs and temporary data)
+      // Create a clean state object for saving (exclude blob URLs but keep PDF info)
       const stateToSave = {
         ...state,
         studyMaterials: state.studyMaterials.map(material => {
           if (material.type === 'pdf' && material.url && material.url.startsWith('blob:')) {
-            // Don't save blob URLs as they're temporary
+            // Don't save blob URLs as they're temporary, but keep the PDF info
             const { url, file, ...cleanMaterial } = material;
-            return cleanMaterial;
+            return { ...cleanMaterial, needsReupload: true };
           }
           return material;
         })
