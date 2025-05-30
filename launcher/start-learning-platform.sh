@@ -66,9 +66,10 @@ if [ ! -d "node_modules" ]; then
     fi
 fi
 
-# Kill any existing processes on ports 3000 and 3001
-kill_port 3000
-kill_port 3001
+# Kill any existing processes on common development ports
+for port in 3000 3001 5173 5174 5175; do
+    kill_port $port
+done
 
 # Start the backend server in background
 echo -e "${BLUE}🔧 Starting backend server on port 3001...${NC}"
@@ -109,9 +110,17 @@ FRONTEND_PID=$!
 # Wait for frontend to start
 sleep 5
 
-# Check if frontend started successfully
-if port_in_use 3000; then
-    echo -e "${GREEN}✅ Frontend server started successfully${NC}"
+# Check if frontend started successfully (check multiple possible ports)
+FRONTEND_PORT=""
+for port in 3000 5173 5174 5175; do
+    if port_in_use $port; then
+        FRONTEND_PORT=$port
+        break
+    fi
+done
+
+if [ ! -z "$FRONTEND_PORT" ]; then
+    echo -e "${GREEN}✅ Frontend server started successfully on port $FRONTEND_PORT${NC}"
 else
     echo -e "${RED}❌ Failed to start frontend server${NC}"
     kill $BACKEND_PID 2>/dev/null
@@ -122,12 +131,12 @@ fi
 # Open the application in default browser
 echo -e "${BLUE}🌐 Opening Visual Learning Platform in browser...${NC}"
 sleep 2
-open "http://localhost:3000"
+open "http://localhost:$FRONTEND_PORT"
 
 echo ""
 echo -e "${GREEN}🎉 Visual Learning Platform is now running!${NC}"
 echo ""
-echo -e "${BLUE}📱 Frontend: http://localhost:3000${NC}"
+echo -e "${BLUE}📱 Frontend: http://localhost:$FRONTEND_PORT${NC}"
 echo -e "${BLUE}🔧 Backend:  http://localhost:3001${NC}"
 echo ""
 echo -e "${YELLOW}💡 Tips:${NC}"
