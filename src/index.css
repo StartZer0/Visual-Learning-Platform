@@ -14,6 +14,34 @@
   @apply max-w-full h-auto;
 }
 
+/* Visualization resize styles */
+.visualization-container {
+  position: relative;
+}
+
+.resize-handle {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 16px;
+  height: 16px;
+  cursor: nw-resize;
+  background: linear-gradient(-45deg, transparent 30%, #9ca3af 30%, #9ca3af 40%, transparent 40%, transparent 60%, #9ca3af 60%, #9ca3af 70%, transparent 70%);
+  transition: background-color 0.2s ease;
+}
+
+.dark .resize-handle {
+  background: linear-gradient(-45deg, transparent 30%, #6b7280 30%, #6b7280 40%, transparent 40%, transparent 60%, #6b7280 60%, #6b7280 70%, transparent 70%);
+}
+
+.resize-handle:hover {
+  background: linear-gradient(-45deg, transparent 30%, #6b7280 30%, #6b7280 40%, transparent 40%, transparent 60%, #6b7280 60%, #6b7280 70%, transparent 70%);
+}
+
+.dark .resize-handle:hover {
+  background: linear-gradient(-45deg, transparent 30%, #9ca3af 30%, #9ca3af 40%, transparent 40%, transparent 60%, #9ca3af 60%, #9ca3af 70%, transparent 70%);
+}
+
 @layer base {
   html {
     font-family: 'Inter', system-ui, sans-serif;

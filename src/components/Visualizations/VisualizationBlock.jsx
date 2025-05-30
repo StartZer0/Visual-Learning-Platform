@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Play, Edit2, Save, X, Trash2, ChevronUp, ChevronDown, Code, Eye } from 'lucide-react';
+import { Play, Edit2, Save, X, Trash2, ChevronUp, ChevronDown, Code, Eye, Maximize2 } from 'lucide-react';
 import { useApp } from '../../contexts/AppContext';
 import Button from '../UI/Button';
 import CodeEditor from './CodeEditor';
@@ -11,13 +11,61 @@ const VisualizationBlock = ({ visualization, index, total }) => {
   const [editCode, setEditCode] = useState(visualization.code);
   const [showCode, setShowCode] = useState(false);
   const [error, setError] = useState(null);
+  const [dimensions, setDimensions] = useState({
+    width: visualization.width || 600,
+    height: visualization.height || 300
+  });
+  const [isResizing, setIsResizing] = useState(false);
   const previewRef = useRef(null);
+  const resizeRef = useRef(null);
 
   useEffect(() => {
     if (!isEditing && visualization.code) {
       executeCode();
     }
   }, [visualization.code, isEditing]);
+
+  // Handle resize functionality
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      if (!isResizing || !resizeRef.current) return;
+
+      const rect = resizeRef.current.getBoundingClientRect();
+      const newWidth = Math.max(300, e.clientX - rect.left);
+      const newHeight = Math.max(200, e.clientY - rect.top);
+
+      setDimensions({ width: newWidth, height: newHeight });
+    };
+
+    const handleMouseUp = () => {
+      if (isResizing) {
+        setIsResizing(false);
+        // Save dimensions to visualization
+        dispatch({
+          type: 'UPDATE_VISUALIZATION',
+          payload: {
+            ...visualization,
+            width: dimensions.width,
+            height: dimensions.height,
+          },
+        });
+      }
+    };
+
+    if (isResizing) {
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+      document.body.style.cursor = 'nw-resize';
+      document.body.style.userSelect = 'none';
+    }
+
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+    };
+  }, [isResizing, dimensions, visualization, dispatch]);
 
   const executeCode = () => {
     if (!previewRef.current) return;
@@ -31,7 +79,7 @@ const VisualizationBlock = ({ visualization, index, total }) => {
       // Create a sandboxed iframe for code execution
       const iframe = document.createElement('iframe');
       iframe.style.width = '100%';
-      iframe.style.height = '300px';
+      iframe.style.height = `${dimensions.height}px`;
       iframe.style.border = 'none';
       iframe.style.borderRadius = '8px';
 
@@ -110,6 +158,19 @@ const VisualizationBlock = ({ visualization, index, total }) => {
     }
   };
 
+  const handleResetSize = () => {
+    const newDimensions = { width: 600, height: 300 };
+    setDimensions(newDimensions);
+    dispatch({
+      type: 'UPDATE_VISUALIZATION',
+      payload: {
+        ...visualization,
+        width: newDimensions.width,
+        height: newDimensions.height,
+      },
+    });
+  };
+
   return (
     <div className="panel">
       <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
@@ -143,6 +204,13 @@ const VisualizationBlock = ({ visualization, index, total }) => {
                 onClick={executeCode}
                 icon={<Play className="h-4 w-4" />}
                 title="Run code"
+              />
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleResetSize}
+                icon={<Maximize2 className="h-4 w-4" />}
+                title="Reset size"
               />
               <div className="h-4 w-px bg-gray-300 dark:bg-gray-600" />
               <Button
@@ -234,9 +302,35 @@ const VisualizationBlock = ({ visualization, index, total }) => {
               </div>
             ) : (
               <div
-                ref={previewRef}
-                className="min-h-[200px] bg-gray-50 dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700"
-              />
+                ref={resizeRef}
+                className="visualization-container relative bg-gray-50 dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700"
+                style={{
+                  width: `${dimensions.width}px`,
+                  maxWidth: '100%',
+                  minWidth: '300px'
+                }}
+              >
+                <div
+                  ref={previewRef}
+                  className="w-full overflow-hidden rounded-lg"
+                  style={{ height: `${dimensions.height}px` }}
+                />
+
+                {/* Resize Handle */}
+                <div
+                  className="resize-handle"
+                  onMouseDown={(e) => {
+                    e.preventDefault();
+                    setIsResizing(true);
+                  }}
+                  title="Drag to resize visualization"
+                />
+
+                {/* Resize indicator */}
+                <div className="absolute bottom-1 left-1 text-xs text-gray-500 dark:text-gray-400 pointer-events-none bg-white dark:bg-gray-800 px-1 rounded">
+                  {dimensions.width} × {dimensions.height}
+                </div>
+              </div>
             )}
           </div>
         )}
