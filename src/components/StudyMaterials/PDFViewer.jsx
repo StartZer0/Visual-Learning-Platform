@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
 import { ChevronLeft, ChevronRight, ZoomIn, ZoomOut, Download, Trash2, Upload } from 'lucide-react';
 import { useApp } from '../../contexts/AppContext';
+import fileUrlManager from '../../utils/fileUrlManager';
 import Button from '../UI/Button';
 
 // Set up PDF.js worker
@@ -43,8 +44,18 @@ const PDFViewer = ({ material }) => {
     setScale(prev => Math.max(0.5, prev - 0.2));
   };
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (window.confirm('Are you sure you want to delete this PDF?')) {
+      // Clean up persistent storage if the file is persistent
+      if (material.isPersistent) {
+        try {
+          await fileUrlManager.deleteFile(material.id);
+          console.log('Deleted persistent file:', material.title);
+        } catch (error) {
+          console.error('Failed to delete persistent file:', error);
+        }
+      }
+
       dispatch({ type: 'DELETE_STUDY_MATERIAL', payload: material.id });
     }
   };
@@ -56,27 +67,35 @@ const PDFViewer = ({ material }) => {
     link.click();
   };
 
-  const handleFileReupload = (event) => {
+  const handleFileReupload = async (event) => {
     const file = event.target.files[0];
     if (!file) return;
 
     if (file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf')) {
       try {
-        const fileUrl = URL.createObjectURL(file);
+        // Store file persistently and get URL
+        const fileUrl = await fileUrlManager.updateFileAndGetUrl(material.id, file, file.name);
 
-        // Update the existing material with new file
+        if (!fileUrl) {
+          throw new Error('Failed to store file persistently');
+        }
+
+        // Update the existing material with new persistent file
         dispatch({
           type: 'UPDATE_STUDY_MATERIAL',
           payload: {
             ...material,
+            title: file.name, // Update title to new filename
             url: fileUrl,
-            file: file,
+            isPersistent: true,
             needsReupload: false,
           },
         });
+
+        console.log('PDF re-uploaded and stored persistently:', file.name);
       } catch (error) {
-        console.error('Error creating object URL:', error);
-        alert('Failed to process PDF file. Please try again.');
+        console.error('Error re-uploading PDF:', error);
+        alert('Failed to re-upload PDF file. Please try again.');
       }
     } else {
       alert(`File type "${file.type}" is not supported. Only PDF files are allowed.`);

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Plus, FileText, Link, Upload } from 'lucide-react';
 import { useApp } from '../../contexts/AppContext';
 import { generateId } from '../../utils/helpers';
+import fileUrlManager from '../../utils/fileUrlManager';
 import Button from '../UI/Button';
 import Modal from '../UI/Modal';
 import PDFViewer from './PDFViewer';
@@ -52,7 +53,7 @@ const StudyPanel = () => {
     setShowAddModal(false);
   };
 
-  const handleFileUpload = (event) => {
+  const handleFileUpload = async (event) => {
     const file = event.target.files[0];
     if (!file) return;
 
@@ -63,22 +64,31 @@ const StudyPanel = () => {
 
     if (file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf')) {
       try {
-        const fileUrl = URL.createObjectURL(file);
+        const materialId = generateId();
+
+        // Store file persistently and get URL
+        const fileUrl = await fileUrlManager.storeFileAndGetUrl(materialId, file, file.name);
+
+        if (!fileUrl) {
+          throw new Error('Failed to store file persistently');
+        }
 
         const newPDF = {
-          id: generateId(),
+          id: materialId,
           topicId: state.currentTopic.id,
           type: 'pdf',
           title: file.name,
           url: fileUrl,
-          file: file,
+          isPersistent: true, // Mark as persistently stored
+          needsReupload: false,
           createdAt: new Date().toISOString(),
         };
 
         dispatch({ type: 'ADD_STUDY_MATERIAL', payload: newPDF });
+        console.log('PDF uploaded and stored persistently:', file.name);
       } catch (error) {
-        console.error('Error creating object URL:', error);
-        alert('Failed to process PDF file. Please try again.');
+        console.error('Error uploading PDF:', error);
+        alert('Failed to upload PDF file. Please try again.');
       }
     } else {
       alert(`File type "${file.type}" is not supported. Only PDF files are allowed.`);

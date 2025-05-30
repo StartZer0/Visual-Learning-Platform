@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useReducer, useEffect } from 'react';
+import fileUrlManager from '../utils/fileUrlManager';
 
 const AppContext = createContext();
 
@@ -83,6 +84,8 @@ const appReducer = (state, action) => {
       };
     case 'SET_CURRENT_TOPIC':
       return { ...state, currentTopic: action.payload };
+    case 'SET_STUDY_MATERIALS':
+      return { ...state, studyMaterials: action.payload };
     case 'ADD_STUDY_MATERIAL':
       return { ...state, studyMaterials: [...state.studyMaterials, action.payload] };
     case 'UPDATE_STUDY_MATERIAL':
@@ -172,17 +175,77 @@ export const AppProvider = ({ children }) => {
     }
   }, []);
 
+  // Restore persistent file URLs after state is loaded
+  useEffect(() => {
+    const restorePersistentFiles = async () => {
+      if (state.studyMaterials.length === 0) return;
+
+      const updatedMaterials = [];
+      let hasUpdates = false;
+
+      for (const material of state.studyMaterials) {
+        if (material.type === 'pdf' && material.isPersistent && !material.url) {
+          try {
+            // Try to restore the file URL from IndexedDB
+            const url = await fileUrlManager.getFileUrl(material.id);
+            if (url) {
+              updatedMaterials.push({
+                ...material,
+                url: url,
+                needsReupload: false
+              });
+              hasUpdates = true;
+              console.log('Restored persistent file:', material.title);
+            } else {
+              // File not found in IndexedDB, mark as needing reupload
+              updatedMaterials.push({
+                ...material,
+                needsReupload: true,
+                isPersistent: false
+              });
+              hasUpdates = true;
+              console.warn('Persistent file not found:', material.title);
+            }
+          } catch (error) {
+            console.error('Failed to restore file:', material.title, error);
+            updatedMaterials.push({
+              ...material,
+              needsReupload: true,
+              isPersistent: false
+            });
+            hasUpdates = true;
+          }
+        } else {
+          updatedMaterials.push(material);
+        }
+      }
+
+      // Update state if we restored any files
+      if (hasUpdates) {
+        dispatch({ type: 'SET_STUDY_MATERIALS', payload: updatedMaterials });
+      }
+    };
+
+    restorePersistentFiles();
+  }, [state.studyMaterials.length]); // Only run when materials are first loaded
+
   // Save state to localStorage whenever it changes (but debounce it)
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      // Create a clean state object for saving (exclude blob URLs but keep PDF info)
+      // Create a clean state object for saving
       const stateToSave = {
         ...state,
         studyMaterials: state.studyMaterials.map(material => {
-          if (material.type === 'pdf' && material.url && material.url.startsWith('blob:')) {
-            // Don't save blob URLs as they're temporary, but keep the PDF info
+          if (material.type === 'pdf') {
+            // For PDFs, save metadata but not blob URLs or File objects
             const { url, file, ...cleanMaterial } = material;
-            return { ...cleanMaterial, needsReupload: true };
+            return {
+              ...cleanMaterial,
+              // Mark as persistent if it has been stored in IndexedDB
+              isPersistent: material.isPersistent || false,
+              // Only mark as needing reupload if it's not persistent
+              needsReupload: !material.isPersistent
+            };
           }
           return material;
         })
@@ -197,6 +260,13 @@ export const AppProvider = ({ children }) => {
 
     return () => clearTimeout(timeoutId);
   }, [state]);
+
+  // Cleanup file URLs on unmount
+  useEffect(() => {
+    return () => {
+      fileUrlManager.cleanup();
+    };
+  }, []);
 
   return (
     <AppContext.Provider value={{ state, dispatch }}>
