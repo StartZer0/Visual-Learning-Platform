@@ -226,7 +226,6 @@ const VisualizationPanel = () => {
                 placeholder="Start writing your note here..."
                 height="400px"
                 showSaveButton={false}
-                className="border border-gray-300 dark:border-gray-600 rounded-lg"
               />
               <div className="mt-2 text-xs text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-800 p-2 rounded">
                 💡 Use the toolbar for formatting, colors, lists, and image uploads

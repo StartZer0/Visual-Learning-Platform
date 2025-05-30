@@ -23,45 +23,8 @@ const RichTextEditor = ({
   const [lastSaved, setLastSaved] = useState(null);
   const autoSaveTimeoutRef = useRef(null);
 
-  // Custom toolbar configuration
-  const modules = {
-    toolbar: {
-      container: [
-        [{ 'header': [1, 2, 3, false] }],
-        [{ 'font': [] }],
-        [{ 'size': ['small', false, 'large', 'huge'] }],
-        ['bold', 'italic', 'underline', 'strike'],
-        [{ 'color': [] }, { 'background': [] }],
-        [{ 'script': 'sub' }, { 'script': 'super' }],
-        [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-        [{ 'indent': '-1' }, { 'indent': '+1' }],
-        [{ 'align': [] }],
-        ['blockquote', 'code-block'],
-        ['link', 'image'],
-        ['clean']
-      ],
-      handlers: {
-        image: handleImageUpload
-      }
-    },
-    clipboard: {
-      matchVisual: false
-    }
-  };
-
-  const formats = [
-    'header', 'font', 'size',
-    'bold', 'italic', 'underline', 'strike',
-    'color', 'background',
-    'script',
-    'list', 'bullet', 'indent',
-    'align',
-    'blockquote', 'code-block',
-    'link', 'image'
-  ];
-
   // Handle image upload
-  async function handleImageUpload() {
+  const handleImageUpload = useCallback(async () => {
     const input = document.createElement('input');
     input.setAttribute('type', 'file');
     input.setAttribute('accept', 'image/*');
@@ -112,7 +75,44 @@ const RichTextEditor = ({
         setIsUploading(false);
       }
     };
-  }
+  }, []);
+
+  // Custom toolbar configuration
+  const modules = {
+    toolbar: {
+      container: [
+        [{ 'header': [1, 2, 3, false] }],
+        [{ 'font': [] }],
+        [{ 'size': ['small', false, 'large', 'huge'] }],
+        ['bold', 'italic', 'underline', 'strike'],
+        [{ 'color': [] }, { 'background': [] }],
+        [{ 'script': 'sub' }, { 'script': 'super' }],
+        [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+        [{ 'indent': '-1' }, { 'indent': '+1' }],
+        [{ 'align': [] }],
+        ['blockquote', 'code-block'],
+        ['link', 'image'],
+        ['clean']
+      ],
+      handlers: {
+        image: handleImageUpload
+      }
+    },
+    clipboard: {
+      matchVisual: false
+    }
+  };
+
+  const formats = [
+    'header', 'font', 'size',
+    'bold', 'italic', 'underline', 'strike',
+    'color', 'background',
+    'script',
+    'list', 'bullet', 'indent',
+    'align',
+    'blockquote', 'code-block',
+    'link', 'image'
+  ];
 
   // Handle content change
   const handleChange = useCallback((content, delta, source, editor) => {
@@ -123,7 +123,7 @@ const RichTextEditor = ({
       if (autoSaveTimeoutRef.current) {
         clearTimeout(autoSaveTimeoutRef.current);
       }
-      
+
       autoSaveTimeoutRef.current = setTimeout(async () => {
         try {
           setIsSaving(true);
@@ -163,11 +163,10 @@ const RichTextEditor = ({
     };
   }, []);
 
-  // Custom styles for dark theme support
+  // Custom styles for consistent rendering
   const editorStyle = {
     height: height,
-    backgroundColor: 'var(--editor-bg, white)',
-    color: 'var(--editor-text, black)'
+    minHeight: '200px'
   };
 
   return (
@@ -208,7 +207,7 @@ const RichTextEditor = ({
       </div>
 
       {/* Rich Text Editor */}
-      <div className="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
+      <div className="quill-wrapper">
         <ReactQuill
           ref={quillRef}
           theme="snow"

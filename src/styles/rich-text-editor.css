@@ -1,11 +1,28 @@
 /* Rich Text Editor Styles */
 
+/* Ensure Quill styles are properly loaded */
+.rich-text-editor .ql-container {
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1.6;
+  border: 1px solid #d1d5db;
+  border-radius: 0 0 0.5rem 0.5rem;
+}
+
+.rich-text-editor .ql-toolbar {
+  border: 1px solid #d1d5db;
+  border-bottom: none;
+  border-radius: 0.5rem 0.5rem 0 0;
+  background-color: #f9fafb;
+}
+
 /* Quill Editor Base Styles */
 .ql-editor {
   font-family: inherit;
   font-size: 14px;
   line-height: 1.6;
   color: inherit;
+  min-height: 200px;
 }
 
 .ql-editor.ql-blank::before {
@@ -13,9 +30,39 @@
   font-style: italic;
 }
 
+/* Modal-specific styles */
+.modal .rich-text-editor {
+  position: relative;
+  z-index: 1;
+}
+
+.modal .ql-container {
+  background-color: white;
+  color: black;
+}
+
+.modal .ql-toolbar {
+  background-color: #f9fafb;
+  border-color: #d1d5db;
+}
+
+.modal .ql-editor {
+  background-color: white;
+  color: black;
+}
+
 /* Dark Theme Support */
 .dark .ql-toolbar {
   background-color: #374151;
+  border-color: #4b5563;
+}
+
+.dark .rich-text-editor .ql-toolbar {
+  background-color: #374151;
+  border-color: #4b5563;
+}
+
+.dark .rich-text-editor .ql-container {
   border-color: #4b5563;
 }
 
@@ -258,12 +305,12 @@
   .ql-toolbar .ql-formats {
     margin-right: 8px;
   }
-  
+
   .ql-toolbar button {
     padding: 3px;
     margin: 0.5px;
   }
-  
+
   .ql-editor {
     font-size: 13px;
   }
