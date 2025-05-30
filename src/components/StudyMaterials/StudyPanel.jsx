@@ -5,6 +5,7 @@ import { generateId } from '../../utils/helpers';
 import apiService from '../../services/api';
 import Button from '../UI/Button';
 import Modal from '../UI/Modal';
+import RichTextEditor from '../UI/RichTextEditor';
 import PDFViewer from './PDFViewer';
 import TextContent from './TextContent';
 import LinkContent from './LinkContent';
@@ -257,6 +258,7 @@ const StudyPanel = () => {
         isOpen={showAddModal}
         onClose={() => setShowAddModal(false)}
         title={`Add ${newItemType === 'text' ? 'Text Content' : 'Link'}`}
+        size={newItemType === 'text' ? 'xl' : 'md'}
       >
         <div className="space-y-4">
           <div>
@@ -277,12 +279,17 @@ const StudyPanel = () => {
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Content
               </label>
-              <textarea
+              <RichTextEditor
                 value={newItemContent}
-                onChange={(e) => setNewItemContent(e.target.value)}
-                className="input-field h-32 resize-none"
-                placeholder="Enter your text content..."
+                onChange={setNewItemContent}
+                placeholder="Start writing your content here..."
+                height="300px"
+                showSaveButton={false}
+                className="border border-gray-300 dark:border-gray-600 rounded-lg"
               />
+              <div className="mt-2 text-xs text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-800 p-2 rounded">
+                💡 Use the toolbar for formatting, colors, lists, and image uploads
+              </div>
             </div>
           )}
 
