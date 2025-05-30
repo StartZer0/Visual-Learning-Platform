@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Plus, FileText, Link, Upload } from 'lucide-react';
 import { useApp } from '../../contexts/AppContext';
 import { generateId } from '../../utils/helpers';
-import fileUrlManager from '../../utils/fileUrlManager';
 import Button from '../UI/Button';
 import Modal from '../UI/Modal';
 import PDFViewer from './PDFViewer';
@@ -16,6 +15,14 @@ const StudyPanel = () => {
   const [newItemTitle, setNewItemTitle] = useState('');
   const [newItemContent, setNewItemContent] = useState('');
   const [newItemUrl, setNewItemUrl] = useState('');
+
+  // Alternative upload method
+  const triggerFileUpload = () => {
+    const input = document.getElementById('pdf-upload-input');
+    if (input) {
+      input.click();
+    }
+  };
 
   const currentTopicMaterials = state.studyMaterials.filter(
     material => material.topicId === state.currentTopic?.id
@@ -58,20 +65,14 @@ const StudyPanel = () => {
     if (!file) return;
 
     if (!state.currentTopic) {
-      alert('Please select a topic first');
+      alert('Please select a topic first from the Topics sidebar on the left');
       return;
     }
 
     if (file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf')) {
       try {
         const materialId = generateId();
-
-        // Store file persistently and get URL
-        const fileUrl = await fileUrlManager.storeFileAndGetUrl(materialId, file, file.name);
-
-        if (!fileUrl) {
-          throw new Error('Failed to store file persistently');
-        }
+        const fileUrl = URL.createObjectURL(file);
 
         const newPDF = {
           id: materialId,
@@ -79,13 +80,14 @@ const StudyPanel = () => {
           type: 'pdf',
           title: file.name,
           url: fileUrl,
-          isPersistent: true, // Mark as persistently stored
-          needsReupload: false,
+          file: file, // Keep the file object for now
+          isPersistent: false, // Simplified - no persistent storage for now
+          needsReupload: false, // Don't mark as needing reupload initially
           createdAt: new Date().toISOString(),
         };
 
         dispatch({ type: 'ADD_STUDY_MATERIAL', payload: newPDF });
-        console.log('PDF uploaded and stored persistently:', file.name);
+        console.log('PDF uploaded successfully:', file.name);
       } catch (error) {
         console.error('Error uploading PDF:', error);
         alert('Failed to upload PDF file. Please try again.');
@@ -118,22 +120,22 @@ const StudyPanel = () => {
           Study Materials
         </h2>
         <div className="flex items-center space-x-2">
-          <label className="cursor-pointer">
-            <input
-              type="file"
-              accept=".pdf"
-              onChange={handleFileUpload}
-              className="hidden"
-            />
-            <Button
-              variant="outline"
-              size="sm"
-              icon={<Upload className="h-4 w-4" />}
-              as="span"
-            >
-              PDF
-            </Button>
-          </label>
+          <input
+            type="file"
+            accept=".pdf"
+            onChange={handleFileUpload}
+            className="hidden"
+            id="pdf-upload-input"
+          />
+          <Button
+            variant="primary"
+            size="sm"
+            onClick={triggerFileUpload}
+            icon={<Upload className="h-4 w-4" />}
+            title="Upload PDF file"
+          >
+            Upload PDF
+          </Button>
           <Button
             variant="outline"
             size="sm"
@@ -157,8 +159,24 @@ const StudyPanel = () => {
         {!state.currentTopic ? (
           <div className="text-center py-8">
             <div className="text-gray-500 dark:text-gray-400 mb-4">
-              Select a topic to view and add study materials
+              📁 Select a topic to view and add study materials
             </div>
+            <div className="text-sm text-gray-400 dark:text-gray-500 mb-4">
+              {state.topics.length === 0 ? (
+                <>
+                  First create a topic using the "+" button in the Topics sidebar on the left
+                </>
+              ) : (
+                <>
+                  Choose from {state.topics.length} available topic{state.topics.length !== 1 ? 's' : ''} in the sidebar
+                </>
+              )}
+            </div>
+            {state.topics.length === 0 && (
+              <div className="text-xs text-yellow-600 dark:text-yellow-400 bg-yellow-50 dark:bg-yellow-900/20 p-3 rounded-lg inline-block">
+                💡 Tip: Click the "Topics" button in the header to show the sidebar if it's hidden
+              </div>
+            )}
           </div>
         ) : currentTopicMaterials.length === 0 ? (
           <div className="text-center py-8">
