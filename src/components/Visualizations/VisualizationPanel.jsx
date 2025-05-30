@@ -6,6 +6,7 @@ import Button from '../UI/Button';
 import Modal from '../UI/Modal';
 import VisualizationBlock from './VisualizationBlock';
 import CodeEditor from './CodeEditor';
+import NotesPanel from './NotesPanel';
 
 const VisualizationPanel = () => {
   const { state, dispatch } = useApp();
@@ -75,38 +76,46 @@ const VisualizationPanel = () => {
         </Button>
       </div>
 
-      <div className="flex-1 overflow-y-auto p-4">
-        {!state.currentTopic ? (
-          <div className="text-center py-8">
-            <div className="text-gray-500 dark:text-gray-400 mb-4">
-              Select a topic to view and add visualizations
+      <div className="flex-1 flex flex-col overflow-hidden">
+        {/* Notes Panel */}
+        <div className="flex-shrink-0 p-4 border-b border-gray-200 dark:border-gray-700">
+          <NotesPanel />
+        </div>
+
+        {/* Visualizations Content */}
+        <div className="flex-1 overflow-y-auto p-4">
+          {!state.currentTopic ? (
+            <div className="text-center py-8">
+              <div className="text-gray-500 dark:text-gray-400 mb-4">
+                Select a topic to view and add visualizations
+              </div>
             </div>
-          </div>
-        ) : currentTopicVisualizations.length === 0 ? (
-          <div className="text-center py-8">
-            <div className="text-gray-500 dark:text-gray-400 mb-4">
-              No visualizations yet for "{state.currentTopic.title}"
+          ) : currentTopicVisualizations.length === 0 ? (
+            <div className="text-center py-8">
+              <div className="text-gray-500 dark:text-gray-400 mb-4">
+                No visualizations yet for "{state.currentTopic.title}"
+              </div>
+              <Button
+                variant="outline"
+                onClick={handleAddVisualization}
+                icon={<Code className="h-4 w-4" />}
+              >
+                Create First Visualization
+              </Button>
             </div>
-            <Button
-              variant="outline"
-              onClick={handleAddVisualization}
-              icon={<Code className="h-4 w-4" />}
-            >
-              Create First Visualization
-            </Button>
-          </div>
-        ) : (
-          <div className="space-y-4">
-            {currentTopicVisualizations.map((viz, index) => (
-              <VisualizationBlock
-                key={viz.id}
-                visualization={viz}
-                index={index}
-                total={currentTopicVisualizations.length}
-              />
-            ))}
-          </div>
-        )}
+          ) : (
+            <div className="space-y-4">
+              {currentTopicVisualizations.map((viz, index) => (
+                <VisualizationBlock
+                  key={viz.id}
+                  visualization={viz}
+                  index={index}
+                  total={currentTopicVisualizations.length}
+                />
+              ))}
+            </div>
+          )}
+        </div>
       </div>
 
       <Modal

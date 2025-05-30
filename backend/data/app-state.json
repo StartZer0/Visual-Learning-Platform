@@ -13,9 +13,17 @@
         },
         {
           "id": "mbaha8wzwk6f5h848v",
-          "title": "YT video",
-          "children": [],
-          "expanded": false,
+          "title": "YT video - Pruning and Distillation Best Practices: The Minitron Approach Explained-",
+          "children": [
+            {
+              "id": "mbaz4hn5p9n7aor7u5",
+              "title": "New Subtopic",
+              "children": [],
+              "expanded": false,
+              "parentId": "mbaha8wzwk6f5h848v"
+            }
+          ],
+          "expanded": true,
           "parentId": "mbafuwe2acp4c9x3rba"
         }
       ],
@@ -24,10 +32,18 @@
     }
   ],
   "currentTopic": {
-    "id": "mbah9elkybh5fwotars",
-    "title": "AToken is Worth over 1,000 Tokens- Efficient Knowledge Distillation",
-    "children": [],
-    "expanded": false,
+    "id": "mbaha8wzwk6f5h848v",
+    "title": "YT video",
+    "children": [
+      {
+        "id": "mbaz4hn5p9n7aor7u5",
+        "title": "New Subtopic",
+        "children": [],
+        "expanded": false,
+        "parentId": "mbaha8wzwk6f5h848v"
+      }
+    ],
+    "expanded": true,
     "parentId": "mbafuwe2acp4c9x3rba"
   },
   "studyMaterials": [
@@ -50,6 +66,14 @@
       "isPersistent": true,
       "needsReupload": false,
       "createdAt": "2025-05-30T07:25:37.866Z"
+    },
+    {
+      "id": "mbaz6xbqrbnsm3h9x3g",
+      "topicId": "mbaha8wzwk6f5h848v",
+      "type": "link",
+      "title": "Pruning and Distillation Best Practices: The Minitron Approach Explained",
+      "createdAt": "2025-05-30T15:46:27.254Z",
+      "url": "https://www.youtube.com/watch?v=eJs-8IDHJ3w"
     }
   ],
   "visualizations": [
@@ -59,6 +83,15 @@
       "title": "s",
       "code": "This is part",
       "createdAt": "2025-05-30T07:00:34.154Z"
+    },
+    {
+      "id": "mbazh2tvlgbya72floa",
+      "topicId": "mbaha8wzwk6f5h848v",
+      "title": "Notes",
+      "code": "LLMs usually have sparce parameters, meaning many of them might not hold much value (zeros). Removing this unnecessary parameters (weights) is called Pruning. We also reduce the activation size.\nWe can speed up the model by reducing bit-size process known quantization.\nKnowledge distillation  - \n",
+      "createdAt": "2025-05-30T15:54:20.947Z",
+      "width": 714.26171875,
+      "height": 295.55859375
     }
   ],
   "contentLinks": [],

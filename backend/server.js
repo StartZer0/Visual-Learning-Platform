@@ -43,6 +43,21 @@ const upload = multer({
   }
 });
 
+// Configure multer for image uploads
+const imageUpload = multer({
+  storage: storage,
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype.startsWith('image/')) {
+      cb(null, true);
+    } else {
+      cb(new Error('Only image files are allowed'), false);
+    }
+  },
+  limits: {
+    fileSize: 10 * 1024 * 1024 // 10MB limit for images
+  }
+});
+
 // Data storage file
 const dataFile = path.join(dataDir, 'app-state.json');
 
@@ -130,12 +145,37 @@ app.post('/api/upload', upload.single('pdf'), (req, res) => {
   }
 });
 
+// Upload image file
+app.post('/api/upload-image', imageUpload.single('image'), (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: 'No image uploaded' });
+    }
+
+    const imageInfo = {
+      id: uuidv4(),
+      originalName: req.file.originalname,
+      filename: req.file.filename,
+      size: req.file.size,
+      mimetype: req.file.mimetype,
+      uploadDate: new Date().toISOString(),
+      url: `/api/files/${req.file.filename}`
+    };
+
+    console.log('Image uploaded successfully:', imageInfo.originalName);
+    res.json(imageInfo);
+  } catch (error) {
+    console.error('Image upload error:', error);
+    res.status(500).json({ error: 'Failed to upload image' });
+  }
+});
+
 // Serve uploaded files
 app.get('/api/files/:filename', (req, res) => {
   try {
     const filename = req.params.filename;
     const filePath = path.join(uploadsDir, filename);
-    
+
     if (!fs.existsSync(filePath)) {
       return res.status(404).json({ error: 'File not found' });
     }
@@ -154,7 +194,7 @@ app.delete('/api/files/:filename', (req, res) => {
   try {
     const filename = req.params.filename;
     const filePath = path.join(uploadsDir, filename);
-    
+
     if (fs.existsSync(filePath)) {
       fs.unlinkSync(filePath);
       console.log('File deleted:', filename);
@@ -173,12 +213,12 @@ app.get('/api/storage/info', (req, res) => {
   try {
     const files = fs.readdirSync(uploadsDir);
     let totalSize = 0;
-    
+
     const fileList = files.map(filename => {
       const filePath = path.join(uploadsDir, filename);
       const stats = fs.statSync(filePath);
       totalSize += stats.size;
-      
+
       return {
         filename,
         size: stats.size,
@@ -206,7 +246,7 @@ app.use((error, req, res, next) => {
       return res.status(400).json({ error: 'File too large. Maximum size is 50MB.' });
     }
   }
-  
+
   console.error('Server error:', error);
   res.status(500).json({ error: 'Internal server error' });
 });

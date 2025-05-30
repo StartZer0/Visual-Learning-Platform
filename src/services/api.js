@@ -51,6 +51,33 @@ class ApiService {
   }
 
   /**
+   * Upload an image file to the backend
+   */
+  async uploadImage(file) {
+    try {
+      const formData = new FormData();
+      formData.append('image', file);
+
+      const response = await fetch(`${this.baseUrl}/upload-image`, {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Image upload failed');
+      }
+
+      const result = await response.json();
+      console.log('Image uploaded to backend:', result);
+      return result;
+    } catch (error) {
+      console.error('Image upload error:', error);
+      throw error;
+    }
+  }
+
+  /**
    * Get file URL from backend
    */
   getFileUrl(filename) {

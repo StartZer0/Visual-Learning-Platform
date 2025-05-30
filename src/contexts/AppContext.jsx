@@ -17,6 +17,7 @@ const initialState = {
   studyMaterials: [],
   visualizations: [],
   contentLinks: [],
+  visualizationNotes: [],
   leftPanelVisible: true,
   rightPanelVisible: true,
   leftPanelWidth: 50,
@@ -124,6 +125,22 @@ const appReducer = (state, action) => {
       return {
         ...state,
         contentLinks: state.contentLinks.filter(link => link.id !== action.payload),
+      };
+    case 'SET_VISUALIZATION_NOTES':
+      return { ...state, visualizationNotes: action.payload };
+    case 'ADD_VISUALIZATION_NOTE':
+      return { ...state, visualizationNotes: [...state.visualizationNotes, action.payload] };
+    case 'UPDATE_VISUALIZATION_NOTE':
+      return {
+        ...state,
+        visualizationNotes: state.visualizationNotes.map(note =>
+          note.id === action.payload.id ? action.payload : note
+        ),
+      };
+    case 'DELETE_VISUALIZATION_NOTE':
+      return {
+        ...state,
+        visualizationNotes: state.visualizationNotes.filter(note => note.id !== action.payload),
       };
     case 'TOGGLE_LEFT_PANEL':
       return { ...state, leftPanelVisible: !state.leftPanelVisible };
