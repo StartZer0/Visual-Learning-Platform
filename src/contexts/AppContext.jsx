@@ -33,6 +33,10 @@ const appReducer = (state, action) => {
       const updateTopicRecursively = (topics, updatedTopic) => {
         return topics.map(topic => {
           if (topic.id === updatedTopic.id) {
+            // Production debug: Log successful update
+            if (process.env.NODE_ENV !== 'production') {
+              console.log('Updating topic:', topic.title, '->', updatedTopic.title);
+            }
             return updatedTopic;
           }
           if (topic.children && topic.children.length > 0) {
@@ -45,9 +49,11 @@ const appReducer = (state, action) => {
         });
       };
 
+      const updatedTopics = updateTopicRecursively(state.topics, action.payload);
+
       return {
         ...state,
-        topics: updateTopicRecursively(state.topics, action.payload),
+        topics: updatedTopics,
       };
     case 'DELETE_TOPIC':
       // Recursive function to delete topics and sub-topics

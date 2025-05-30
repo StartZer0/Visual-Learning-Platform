@@ -10,6 +10,15 @@ const TopicNode = ({ topic, level = 0 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editTitle, setEditTitle] = useState(topic.title);
 
+  // Production fix: Sync local state with prop changes
+  React.useEffect(() => {
+    setEditTitle(topic.title);
+  }, [topic.title]);
+
+  React.useEffect(() => {
+    setIsExpanded(topic.expanded || false);
+  }, [topic.expanded]);
+
   const hasChildren = topic.children && topic.children.length > 0;
   const isSelected = state.currentTopic?.id === topic.id;
 
@@ -22,6 +31,7 @@ const TopicNode = ({ topic, level = 0 }) => {
     });
   };
 
+  // Production-safe: Use stable references and explicit dependencies
   const handleAddSubtopic = React.useCallback(() => {
     const newSubtopic = {
       id: generateId(),
@@ -39,33 +49,49 @@ const TopicNode = ({ topic, level = 0 }) => {
 
     dispatch({ type: 'UPDATE_TOPIC', payload: updatedTopic });
     setIsExpanded(true);
-  }, [topic, dispatch]);
+  }, [topic.id, topic.children, topic.title, topic.parentId, dispatch]);
 
+  // Production-safe: Separate edit handlers for better stability
+  const startEditing = React.useCallback(() => {
+    setIsEditing(true);
+    setEditTitle(topic.title); // Ensure we have the latest title
+  }, [topic.title]);
+
+  const saveEdit = React.useCallback(() => {
+    if (editTitle.trim() !== '' && editTitle.trim() !== topic.title) {
+      const updatedTopic = { ...topic, title: editTitle.trim() };
+      dispatch({ type: 'UPDATE_TOPIC', payload: updatedTopic });
+    } else {
+      setEditTitle(topic.title); // Reset to original if empty or unchanged
+    }
+    setIsEditing(false);
+  }, [editTitle, topic, dispatch]);
+
+  const cancelEdit = React.useCallback(() => {
+    setEditTitle(topic.title);
+    setIsEditing(false);
+  }, [topic.title]);
+
+  // Combined handler for backward compatibility
   const handleEdit = React.useCallback(() => {
     if (isEditing) {
-      if (editTitle.trim() !== '') {
-        dispatch({
-          type: 'UPDATE_TOPIC',
-          payload: { ...topic, title: editTitle.trim() }
-        });
-      } else {
-        setEditTitle(topic.title); // Reset to original if empty
-      }
-      setIsEditing(false);
+      saveEdit();
     } else {
-      setIsEditing(true);
+      startEditing();
     }
-  }, [isEditing, editTitle, topic, dispatch]);
+  }, [isEditing, saveEdit, startEditing]);
 
+  // Production-safe: Stable delete handler with explicit dependencies
   const handleDelete = React.useCallback(() => {
-    const confirmMessage = topic.children && topic.children.length > 0
-      ? `Are you sure you want to delete "${topic.title}" and all its ${topic.children.length} subtopic(s)?`
+    const childrenCount = topic.children ? topic.children.length : 0;
+    const confirmMessage = childrenCount > 0
+      ? `Are you sure you want to delete "${topic.title}" and all its ${childrenCount} subtopic(s)?`
       : `Are you sure you want to delete "${topic.title}"?`;
 
     if (window.confirm(confirmMessage)) {
       dispatch({ type: 'DELETE_TOPIC', payload: topic.id });
     }
-  }, [topic, dispatch]);
+  }, [topic.id, topic.title, topic.children, dispatch]);
 
   const handleSelect = () => {
     dispatch({ type: 'SET_CURRENT_TOPIC', payload: topic });
@@ -120,12 +146,16 @@ const TopicNode = ({ topic, level = 0 }) => {
               type="text"
               value={editTitle}
               onChange={(e) => setEditTitle(e.target.value)}
-              onBlur={handleEdit}
+              onBlur={saveEdit}
               onKeyDown={(e) => {
-                if (e.key === 'Enter') handleEdit();
+                e.stopPropagation();
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  saveEdit();
+                }
                 if (e.key === 'Escape') {
-                  setEditTitle(topic.title);
-                  setIsEditing(false);
+                  e.preventDefault();
+                  cancelEdit();
                 }
               }}
               className="flex-1 px-2 py-1 text-sm bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded"
