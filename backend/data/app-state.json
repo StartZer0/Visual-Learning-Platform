@@ -1,0 +1,68 @@
+{
+  "topics": [
+    {
+      "id": "mbafuwe2acp4c9x3rba",
+      "title": "ddd",
+      "children": [
+        {
+          "id": "mbafuz536rps9gnkz0x",
+          "title": "New Subtopic",
+          "children": [
+            {
+              "id": "mbafuzvj9jj7kksziuo",
+              "title": "New Subtopic",
+              "children": [],
+              "expanded": false,
+              "parentId": "mbafuz536rps9gnkz0x"
+            }
+          ],
+          "expanded": true,
+          "parentId": "mbafuwe2acp4c9x3rba"
+        }
+      ],
+      "expanded": true,
+      "parentId": null
+    }
+  ],
+  "currentTopic": {
+    "id": "mbafuwe2acp4c9x3rba",
+    "title": "New Topic",
+    "children": [
+      {
+        "id": "mbafuz536rps9gnkz0x",
+        "title": "New Subtopic",
+        "children": [
+          {
+            "id": "mbafuzvj9jj7kksziuo",
+            "title": "New Subtopic",
+            "children": [],
+            "expanded": false,
+            "parentId": "mbafuz536rps9gnkz0x"
+          }
+        ],
+        "expanded": true,
+        "parentId": "mbafuwe2acp4c9x3rba"
+      }
+    ],
+    "expanded": true,
+    "parentId": null
+  },
+  "studyMaterials": [
+    {
+      "id": "mbafvb2dipg15lj7jdg",
+      "topicId": "mbafuwe2acp4c9x3rba",
+      "type": "pdf",
+      "title": "AToken is Worth over 1,000 Tokens- Efficient Knowledge Distillation through Low-Rank Clone.pdf",
+      "filename": "056af1df-8b4d-48af-80d6-4d27b23d7171-AToken is Worth over 1,000 Tokens- Efficient Knowledge Distillation through Low-Rank Clone.pdf",
+      "isPersistent": true,
+      "needsReupload": false,
+      "createdAt": "2025-05-30T06:45:32.521Z"
+    }
+  ],
+  "visualizations": [],
+  "contentLinks": [],
+  "leftPanelVisible": true,
+  "rightPanelVisible": true,
+  "leftPanelWidth": 50,
+  "sidebarCollapsed": false
+}

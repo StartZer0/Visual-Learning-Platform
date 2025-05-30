@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
 import { ChevronLeft, ChevronRight, ZoomIn, ZoomOut, Download, Trash2, Upload } from 'lucide-react';
 import { useApp } from '../../contexts/AppContext';
-import fileUrlManager from '../../utils/fileUrlManager';
+import apiService from '../../services/api';
 import Button from '../UI/Button';
 
 // Set up PDF.js worker
@@ -15,6 +15,40 @@ const PDFViewer = ({ material }) => {
   const [scale, setScale] = useState(1.0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [pdfUrl, setPdfUrl] = useState(material.url);
+
+  // Effect to restore PDF URL if needed
+  useEffect(() => {
+    const restorePdfUrl = async () => {
+      // If we don't have a URL but have a filename and it's persistent, try to restore
+      if (!material.url && material.filename && material.isPersistent) {
+        try {
+          const backendAvailable = await apiService.checkHealth();
+          if (backendAvailable) {
+            const restoredUrl = apiService.getFileUrl(material.filename);
+            setPdfUrl(restoredUrl);
+
+            // Update the material in state
+            dispatch({
+              type: 'UPDATE_STUDY_MATERIAL',
+              payload: {
+                ...material,
+                url: restoredUrl,
+                needsReupload: false
+              }
+            });
+
+            console.log('Restored PDF URL:', material.title);
+          }
+        } catch (error) {
+          console.error('Failed to restore PDF URL:', error);
+          setError('Failed to load PDF from storage');
+        }
+      }
+    };
+
+    restorePdfUrl();
+  }, [material, dispatch]);
 
   const onDocumentLoadSuccess = ({ numPages }) => {
     setNumPages(numPages);
@@ -73,26 +107,54 @@ const PDFViewer = ({ material }) => {
 
     if (file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf')) {
       try {
-        // Store file persistently and get URL
-        const fileUrl = await fileUrlManager.updateFileAndGetUrl(material.id, file, file.name);
+        // Check if backend is available
+        const backendAvailable = await apiService.checkHealth();
 
-        if (!fileUrl) {
-          throw new Error('Failed to store file persistently');
+        let fileUrl, isPersistent, filename;
+
+        if (backendAvailable) {
+          // Upload to backend for persistent storage
+          try {
+            const uploadResult = await apiService.uploadFile(file, material.id);
+            fileUrl = apiService.getFileUrl(uploadResult.filename);
+            filename = uploadResult.filename;
+            isPersistent = true;
+            console.log('PDF re-uploaded to backend:', file.name);
+          } catch (backendError) {
+            console.warn('Backend upload failed, using fallback:', backendError);
+            fileUrl = URL.createObjectURL(file);
+            isPersistent = false;
+          }
+        } else {
+          // Fallback to blob URL if backend not available
+          console.warn('Backend not available, using blob URL');
+          fileUrl = URL.createObjectURL(file);
+          isPersistent = false;
         }
 
-        // Update the existing material with new persistent file
+        // Update the existing material with new file
+        const updatedMaterial = {
+          ...material,
+          title: file.name, // Update title to new filename
+          url: fileUrl,
+          filename: filename,
+          isPersistent: isPersistent,
+          needsReupload: !isPersistent,
+        };
+
         dispatch({
           type: 'UPDATE_STUDY_MATERIAL',
-          payload: {
-            ...material,
-            title: file.name, // Update title to new filename
-            url: fileUrl,
-            isPersistent: true,
-            needsReupload: false,
-          },
+          payload: updatedMaterial,
         });
 
-        console.log('PDF re-uploaded and stored persistently:', file.name);
+        // Update local state
+        setPdfUrl(fileUrl);
+
+        if (isPersistent) {
+          alert(`✅ PDF "${file.name}" re-uploaded successfully and saved permanently!`);
+        } else {
+          alert(`⚠️ PDF "${file.name}" re-uploaded (will need re-upload after refresh - start backend for permanent storage)`);
+        }
       } catch (error) {
         console.error('Error re-uploading PDF:', error);
         alert('Failed to re-upload PDF file. Please try again.');
@@ -180,6 +242,16 @@ const PDFViewer = ({ material }) => {
               </label>
             </div>
           </div>
+        ) : !pdfUrl ? (
+          <div className="text-center py-8">
+            <div className="text-gray-500 dark:text-gray-400 mb-4">
+              📄 Restoring PDF...
+            </div>
+            <div className="text-sm text-gray-400 dark:text-gray-500 mb-4">
+              Attempting to restore PDF from storage...
+            </div>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600 mx-auto"></div>
+          </div>
         ) : (
           <>
             {loading && (
@@ -199,7 +271,7 @@ const PDFViewer = ({ material }) => {
 
             <div className="flex flex-col items-center">
               <Document
-                file={material.url}
+                file={pdfUrl}
                 onLoadSuccess={onDocumentLoadSuccess}
                 onLoadError={onDocumentLoadError}
                 loading=""

@@ -172,6 +172,24 @@ export const AppProvider = ({ children }) => {
           try {
             const backendState = await apiService.loadState();
             console.log('Loaded state from backend');
+
+            // Restore PDF URLs for persistent files
+            if (backendState.studyMaterials) {
+              const restoredMaterials = backendState.studyMaterials.map(material => {
+                if (material.type === 'pdf' && material.isPersistent && material.filename) {
+                  // Restore the backend URL
+                  return {
+                    ...material,
+                    url: apiService.getFileUrl(material.filename),
+                    needsReupload: false
+                  };
+                }
+                return material;
+              });
+
+              backendState.studyMaterials = restoredMaterials;
+            }
+
             dispatch({ type: 'LOAD_STATE', payload: backendState });
             return;
           } catch (backendError) {
