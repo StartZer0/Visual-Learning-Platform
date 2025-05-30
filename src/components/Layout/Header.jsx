@@ -49,13 +49,14 @@ const Header = () => {
 
         <div className="flex items-center space-x-2">
           <Button
-            variant={state.sidebarCollapsed ? "primary" : "ghost"}
+            variant="primary"
             size="sm"
             onClick={() => dispatch({ type: 'TOGGLE_SIDEBAR' })}
-            icon={state.sidebarCollapsed ? <Menu className="h-4 w-4" /> : <X className="h-4 w-4" />}
-            title={state.sidebarCollapsed ? "Show topics sidebar" : "Hide topics sidebar"}
-            className={state.sidebarCollapsed ? "animate-pulse" : ""}
-          />
+            icon={<Menu className="h-4 w-4" />}
+            title="Toggle Topics Sidebar"
+          >
+            Topics
+          </Button>
 
           <div className="h-4 w-px bg-gray-300 dark:bg-gray-600" />
 

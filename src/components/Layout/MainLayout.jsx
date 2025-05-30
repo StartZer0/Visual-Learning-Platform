@@ -1,15 +1,13 @@
 import React from 'react';
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
-import { Menu } from 'lucide-react';
 import { useApp } from '../../contexts/AppContext';
 import Header from './Header';
 import TopicTree from '../TopicHierarchy/TopicTree';
 import StudyPanel from '../StudyMaterials/StudyPanel';
 import VisualizationPanel from '../Visualizations/VisualizationPanel';
-import Button from '../UI/Button';
 
 const MainLayout = () => {
-  const { state, dispatch } = useApp();
+  const { state } = useApp();
 
   return (
     <div className="h-screen flex flex-col bg-gray-50 dark:bg-gray-900">
@@ -62,21 +60,7 @@ const MainLayout = () => {
           </PanelGroup>
         </div>
 
-        {/* Floating sidebar toggle button - appears when sidebar is hidden */}
-        {state.sidebarCollapsed && (
-          <div className="absolute top-4 left-4 z-50">
-            <Button
-              variant="primary"
-              size="sm"
-              onClick={() => dispatch({ type: 'SHOW_SIDEBAR' })}
-              icon={<Menu className="h-4 w-4" />}
-              title="Show topics sidebar"
-              className="shadow-lg animate-pulse"
-            >
-              Topics
-            </Button>
-          </div>
-        )}
+
       </div>
     </div>
   );
