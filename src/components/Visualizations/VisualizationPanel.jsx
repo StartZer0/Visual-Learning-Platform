@@ -91,6 +91,7 @@ const VisualizationPanel = () => {
       lastModified: new Date().toISOString(),
     };
 
+    console.log('🔍 Creating new visualization note with content:', newNoteContent);
     dispatch({ type: 'ADD_VISUALIZATION_NOTE', payload: newNote });
     setShowAddModal(false);
   };

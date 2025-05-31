@@ -29,6 +29,7 @@ const NoteBlock = ({ note, index, total }) => {
         lastModified: new Date().toISOString(),
       };
 
+      console.log('🔍 Updating visualization note with content:', content);
       dispatch({
         type: 'UPDATE_VISUALIZATION_NOTE',
         payload: updatedNote,

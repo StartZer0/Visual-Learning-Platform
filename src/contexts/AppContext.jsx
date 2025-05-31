@@ -247,6 +247,8 @@ export const AppProvider = ({ children }) => {
         })
       };
 
+      console.log('🔍 Saving state with visualization notes:', stateToSave.visualizationNotes?.length || 0, 'notes');
+
       // Try to save to backend first
       try {
         const backendAvailable = await apiService.checkHealth();
