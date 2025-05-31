@@ -29,40 +29,10 @@ const NoteBlock = ({ note, index, total }) => {
         lastModified: new Date().toISOString(),
       };
 
-      // Update the state first
       dispatch({
         type: 'UPDATE_VISUALIZATION_NOTE',
         payload: updatedNote,
       });
-
-      // Manually save to backend with the updated state to ensure immediate persistence
-      try {
-        const backendAvailable = await apiService.checkHealth();
-        if (backendAvailable) {
-          // Create updated state with the new note
-          const updatedVisualizationNotes = state.visualizationNotes.map(n =>
-            n.id === updatedNote.id ? updatedNote : n
-          );
-
-          const stateToSave = {
-            ...state,
-            visualizationNotes: updatedVisualizationNotes,
-            studyMaterials: state.studyMaterials.map(material => {
-              if (material.type === 'pdf') {
-                // For PDFs, save metadata but not blob URLs
-                const { url, file, ...cleanMaterial } = material;
-                return cleanMaterial;
-              }
-              return material;
-            })
-          };
-
-          await apiService.saveState(stateToSave);
-          console.log('Note saved to backend immediately');
-        }
-      } catch (backendError) {
-        console.warn('Failed to save to backend:', backendError);
-      }
 
       setIsEditing(false);
       return true;

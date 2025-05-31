@@ -21,39 +21,10 @@ const TextContent = ({ material }) => {
         lastModified: new Date().toISOString(),
       };
 
-      // Update the state first
       dispatch({
         type: 'UPDATE_STUDY_MATERIAL',
         payload: updatedMaterial,
       });
-
-      // Manually save to backend with the updated state to ensure immediate persistence
-      try {
-        const backendAvailable = await apiService.checkHealth();
-        if (backendAvailable) {
-          // Create updated state with the new material
-          const updatedStudyMaterials = state.studyMaterials.map(m =>
-            m.id === updatedMaterial.id ? updatedMaterial : m
-          );
-
-          const stateToSave = {
-            ...state,
-            studyMaterials: updatedStudyMaterials.map(mat => {
-              if (mat.type === 'pdf') {
-                // For PDFs, save metadata but not blob URLs
-                const { url, file, ...cleanMaterial } = mat;
-                return cleanMaterial;
-              }
-              return mat;
-            })
-          };
-
-          await apiService.saveState(stateToSave);
-          console.log('Study material saved to backend immediately');
-        }
-      } catch (backendError) {
-        console.warn('Failed to save to backend:', backendError);
-      }
 
       setIsEditing(false);
       return true;
