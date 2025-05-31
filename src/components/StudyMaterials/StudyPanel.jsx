@@ -54,6 +54,7 @@ const StudyPanel = () => {
 
     if (newItemType === 'text') {
       newItem.content = newItemContent;
+      console.log('💾 Saving new text content:', newItemContent);
     } else if (newItemType === 'link') {
       newItem.url = newItemUrl;
     }

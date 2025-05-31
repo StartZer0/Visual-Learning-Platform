@@ -207,6 +207,66 @@ export const AppProvider = ({ children }) => {
               backendState.studyMaterials = restoredMaterials;
             }
 
+            // Restore image URLs in rich text content for study materials and visualization notes
+            const restoreImageUrls = (content) => {
+              if (!content) return content;
+
+              console.log('🔍 Restoring image URLs in content:', content);
+
+              // Handle the new backend file format
+              let restoredContent = content;
+
+              // Replace __BACKEND_FILE__ markers with full URLs
+              restoredContent = restoredContent.replace(/src="__BACKEND_FILE__([^"]+)"/g, (match, filename) => {
+                const newUrl = `src="${apiService.getFileUrl(filename)}"`;
+                console.log('🔄 Restored backend file:', match, '→', newUrl);
+                return newUrl;
+              });
+
+              // Also handle legacy relative paths
+              restoredContent = restoredContent.replace(/src="\/api\/files\/([^"]+)"/g, (match, filename) => {
+                const newUrl = `src="${apiService.getFileUrl(filename)}"`;
+                console.log('🔄 Restored relative path:', match, '→', newUrl);
+                return newUrl;
+              });
+
+              // Also handle cases where full URLs might be broken (e.g., wrong port)
+              restoredContent = restoredContent.replace(/src="http:\/\/localhost:\d+\/api\/files\/([^"]+)"/g, (match, filename) => {
+                const newUrl = `src="${apiService.getFileUrl(filename)}"`;
+                console.log('🔄 Restored full URL:', match, '→', newUrl);
+                return newUrl;
+              });
+
+              console.log('✅ Final restored content:', restoredContent);
+              return restoredContent;
+            };
+
+            // Restore images in study materials
+            if (backendState.studyMaterials) {
+              backendState.studyMaterials = backendState.studyMaterials.map(material => {
+                if (material.type === 'text' && material.content) {
+                  return {
+                    ...material,
+                    content: restoreImageUrls(material.content)
+                  };
+                }
+                return material;
+              });
+            }
+
+            // Restore images in visualization notes
+            if (backendState.visualizationNotes) {
+              backendState.visualizationNotes = backendState.visualizationNotes.map(note => {
+                if (note.content) {
+                  return {
+                    ...note,
+                    content: restoreImageUrls(note.content)
+                  };
+                }
+                return note;
+              });
+            }
+
             dispatch({ type: 'LOAD_STATE', payload: backendState });
             return;
           } catch (backendError) {
@@ -266,7 +326,7 @@ export const AppProvider = ({ children }) => {
       } catch (error) {
         console.error('Failed to save state to localStorage:', error);
       }
-    }, 500); // Debounce saves by 500ms
+    }, 100); // Debounce saves by 100ms for faster persistence
 
     return () => clearTimeout(timeoutId);
   }, [state]);

@@ -6,7 +6,7 @@ import SimpleRichTextEditor from '../UI/SimpleRichTextEditor';
 import apiService from '../../services/api';
 
 const NoteBlock = ({ note, index, total }) => {
-  const { dispatch } = useApp();
+  const { state, dispatch } = useApp();
   const [isEditing, setIsEditing] = useState(false);
   const [editTitle, setEditTitle] = useState(note.title);
   const [editContent, setEditContent] = useState(note.content);
@@ -34,17 +34,6 @@ const NoteBlock = ({ note, index, total }) => {
         type: 'UPDATE_VISUALIZATION_NOTE',
         payload: updatedNote,
       });
-
-      // Save to backend if available
-      try {
-        const backendAvailable = await apiService.checkHealth();
-        if (backendAvailable) {
-          const currentState = JSON.parse(localStorage.getItem('learningPlatformState') || '{}');
-          await apiService.saveState(currentState);
-        }
-      } catch (backendError) {
-        console.warn('Failed to save to backend:', backendError);
-      }
 
       setIsEditing(false);
       return true;

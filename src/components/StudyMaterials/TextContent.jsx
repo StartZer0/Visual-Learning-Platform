@@ -7,7 +7,7 @@ import SimpleRichTextEditor from '../UI/SimpleRichTextEditor';
 import apiService from '../../services/api';
 
 const TextContent = ({ material }) => {
-  const { dispatch } = useApp();
+  const { state, dispatch } = useApp();
   const [isEditing, setIsEditing] = useState(false);
   const [editContent, setEditContent] = useState(material.content);
   const [editTitle, setEditTitle] = useState(material.title);
@@ -25,17 +25,6 @@ const TextContent = ({ material }) => {
         type: 'UPDATE_STUDY_MATERIAL',
         payload: updatedMaterial,
       });
-
-      // Save to backend if available
-      try {
-        const backendAvailable = await apiService.checkHealth();
-        if (backendAvailable) {
-          const currentState = JSON.parse(localStorage.getItem('learningPlatformState') || '{}');
-          await apiService.saveState(currentState);
-        }
-      } catch (backendError) {
-        console.warn('Failed to save to backend:', backendError);
-      }
 
       setIsEditing(false);
       return true;
