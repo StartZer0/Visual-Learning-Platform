@@ -72,7 +72,7 @@
       "title": "Pruning and Distillation Best Practices: The Minitron Approach Explained",
       "content": "<div bis_skin_checked=\"1\">1) LLMs usually have sparse parameters, meaning many of them might not hold much value (zeros). Removing these unnecessary parameters (weights) is called pruning. We also reduce the activation size.</div><div bis_skin_checked=\"1\"><br></div><div bis_skin_checked=\"1\">2) We can speed up the model by reducing the bit-size process known as quantization.</div><div bis_skin_checked=\"1\">Knowledge distillation&nbsp; -&nbsp;</div><div bis_skin_checked=\"1\">&nbsp;</div><div bis_skin_checked=\"1\">For pruning, there are 3 key metrics to determine what to remove:&nbsp;</div><div bis_skin_checked=\"1\">1) Taylor gradient - assessing the importance of the model weights by analyzing their contribution to the loss function. Estimate weight sensitivity and remove that which has minimal impact on performance.</div><div bis_skin_checked=\"1\">2) Cosine similarity—measures how neurons or layers are similar to each other. Highly similar ones can be removed.</div><div bis_skin_checked=\"1\">3) Perplexity - evaluate how well the model predicts samples. Low preplexity means better predictions.</div><div bis_skin_checked=\"1\"><br></div>",
       "createdAt": "2025-05-30T17:16:06.935Z",
-      "lastModified": "2025-05-30T18:24:34.490Z"
+      "lastModified": "2025-05-31T17:03:06.642Z"
     }
   ],
   "leftPanelVisible": true,

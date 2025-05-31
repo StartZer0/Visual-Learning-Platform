@@ -38,7 +38,7 @@ const StudyPanel = () => {
     setShowAddModal(true);
   };
 
-  const handleSaveItem = () => {
+  const handleSaveItem = async () => {
     if (!state.currentTopic) {
       alert('Please select a topic first');
       return;
@@ -58,7 +58,35 @@ const StudyPanel = () => {
       newItem.url = newItemUrl;
     }
 
+    // Update the state first
     dispatch({ type: 'ADD_STUDY_MATERIAL', payload: newItem });
+
+    // Manually save to backend with the updated state to ensure immediate persistence
+    try {
+      const backendAvailable = await apiService.checkHealth();
+      if (backendAvailable) {
+        // Create updated state with the new item
+        const updatedStudyMaterials = [...state.studyMaterials, newItem];
+
+        const stateToSave = {
+          ...state,
+          studyMaterials: updatedStudyMaterials.map(material => {
+            if (material.type === 'pdf') {
+              // For PDFs, save metadata but not blob URLs
+              const { url, file, ...cleanMaterial } = material;
+              return cleanMaterial;
+            }
+            return material;
+          })
+        };
+
+        await apiService.saveState(stateToSave);
+        console.log('New study material saved to backend immediately');
+      }
+    } catch (backendError) {
+      console.warn('Failed to save to backend:', backendError);
+    }
+
     setShowAddModal(false);
   };
 

@@ -76,7 +76,7 @@ const VisualizationPanel = () => {
     setShowAddModal(false);
   };
 
-  const handleSaveNote = () => {
+  const handleSaveNote = async () => {
     if (!state.currentTopic) {
       alert('Please select a topic first');
       return;
@@ -91,15 +91,44 @@ const VisualizationPanel = () => {
       lastModified: new Date().toISOString(),
     };
 
+    // Update the state first
     dispatch({ type: 'ADD_VISUALIZATION_NOTE', payload: newNote });
+
+    // Manually save to backend with the updated state to ensure immediate persistence
+    try {
+      const backendAvailable = await apiService.checkHealth();
+      if (backendAvailable) {
+        // Create updated state with the new note
+        const updatedVisualizationNotes = [...(state.visualizationNotes || []), newNote];
+
+        const stateToSave = {
+          ...state,
+          visualizationNotes: updatedVisualizationNotes,
+          studyMaterials: state.studyMaterials.map(material => {
+            if (material.type === 'pdf') {
+              // For PDFs, save metadata but not blob URLs
+              const { url, file, ...cleanMaterial } = material;
+              return cleanMaterial;
+            }
+            return material;
+          })
+        };
+
+        await apiService.saveState(stateToSave);
+        console.log('New visualization note saved to backend immediately');
+      }
+    } catch (backendError) {
+      console.warn('Failed to save to backend:', backendError);
+    }
+
     setShowAddModal(false);
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (modalType === 'visualization') {
       handleSaveVisualization();
     } else {
-      handleSaveNote();
+      await handleSaveNote();
     }
   };
 
