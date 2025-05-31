@@ -91,6 +91,8 @@ const VisualizationPanel = () => {
       lastModified: new Date().toISOString(),
     };
 
+    console.log('💾 Saving new note content:', newNoteContent);
+
     // Update the state first
     dispatch({ type: 'ADD_VISUALIZATION_NOTE', payload: newNote });
 

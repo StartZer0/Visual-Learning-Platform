@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
-import { 
-  Bold, Italic, Underline, Strikethrough, 
+import {
+  Bold, Italic, Underline, Strikethrough,
   List, ListOrdered, AlignLeft, AlignCenter, AlignRight,
   Image as ImageIcon, Link, Save, Loader2, Type
 } from 'lucide-react';
@@ -35,7 +35,7 @@ const SimpleRichTextEditor = ({
   // Handle content change
   const handleContentChange = useCallback(() => {
     if (!editorRef.current) return;
-    
+
     const content = editorRef.current.innerHTML;
     onChange?.(content);
 
@@ -44,7 +44,7 @@ const SimpleRichTextEditor = ({
       if (autoSaveTimeoutRef.current) {
         clearTimeout(autoSaveTimeoutRef.current);
       }
-      
+
       autoSaveTimeoutRef.current = setTimeout(async () => {
         try {
           setIsSaving(true);
@@ -297,7 +297,7 @@ const SimpleRichTextEditor = ({
         contentEditable={!disabled}
         onInput={handleContentChange}
         className="w-full p-4 border border-t-0 border-gray-300 dark:border-gray-600 rounded-b-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent overflow-y-auto"
-        style={{ 
+        style={{
           height: height,
           minHeight: '200px'
         }}

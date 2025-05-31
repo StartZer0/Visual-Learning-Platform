@@ -210,10 +210,28 @@ export const AppProvider = ({ children }) => {
             // Restore image URLs in rich text content for study materials and visualization notes
             const restoreImageUrls = (content) => {
               if (!content) return content;
+
+              console.log('🔍 Restoring image URLs in content:', content);
+
+              // Handle both relative paths and potentially broken full URLs
+              let restoredContent = content;
+
               // Replace relative image paths with full backend URLs
-              return content.replace(/src="\/api\/files\/([^"]+)"/g, (match, filename) => {
-                return `src="${apiService.getFileUrl(filename)}"`;
+              restoredContent = restoredContent.replace(/src="\/api\/files\/([^"]+)"/g, (match, filename) => {
+                const newUrl = `src="${apiService.getFileUrl(filename)}"`;
+                console.log('🔄 Restored relative path:', match, '→', newUrl);
+                return newUrl;
               });
+
+              // Also handle cases where full URLs might be broken (e.g., wrong port)
+              restoredContent = restoredContent.replace(/src="http:\/\/localhost:\d+\/api\/files\/([^"]+)"/g, (match, filename) => {
+                const newUrl = `src="${apiService.getFileUrl(filename)}"`;
+                console.log('🔄 Restored full URL:', match, '→', newUrl);
+                return newUrl;
+              });
+
+              console.log('✅ Final restored content:', restoredContent);
+              return restoredContent;
             };
 
             // Restore images in study materials
