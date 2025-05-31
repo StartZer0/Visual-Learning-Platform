@@ -207,6 +207,41 @@ export const AppProvider = ({ children }) => {
               backendState.studyMaterials = restoredMaterials;
             }
 
+            // Restore image URLs in rich text content for study materials and visualization notes
+            const restoreImageUrls = (content) => {
+              if (!content) return content;
+              // Replace relative image paths with full backend URLs
+              return content.replace(/src="\/api\/files\/([^"]+)"/g, (match, filename) => {
+                return `src="${apiService.getFileUrl(filename)}"`;
+              });
+            };
+
+            // Restore images in study materials
+            if (backendState.studyMaterials) {
+              backendState.studyMaterials = backendState.studyMaterials.map(material => {
+                if (material.type === 'text' && material.content) {
+                  return {
+                    ...material,
+                    content: restoreImageUrls(material.content)
+                  };
+                }
+                return material;
+              });
+            }
+
+            // Restore images in visualization notes
+            if (backendState.visualizationNotes) {
+              backendState.visualizationNotes = backendState.visualizationNotes.map(note => {
+                if (note.content) {
+                  return {
+                    ...note,
+                    content: restoreImageUrls(note.content)
+                  };
+                }
+                return note;
+              });
+            }
+
             dispatch({ type: 'LOAD_STATE', payload: backendState });
             return;
           } catch (backendError) {

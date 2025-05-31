@@ -2,11 +2,18 @@
   "topics": [
     {
       "id": "mbb0f1wtq4qtvll6nbi",
-      "title": "New Topic",
+      "title": "Compression",
       "children": [
         {
           "id": "mbb0udzabjfeklwt54n",
-          "title": "dddd gg dsssssssssssssssss",
+          "title": "YT - Pruning and Distillation Best Practices: The Minitron Approach Explained",
+          "children": [],
+          "expanded": true,
+          "parentId": "mbb0f1wtq4qtvll6nbi"
+        },
+        {
+          "id": "mbb1ob8qzqfx1rzzi7",
+          "title": "s",
           "children": [],
           "expanded": false,
           "parentId": "mbb0f1wtq4qtvll6nbi"
@@ -14,31 +21,60 @@
       ],
       "expanded": true,
       "parentId": null
+    },
+    {
+      "id": "mbcgsi7s3l1nk8xx9p2",
+      "title": "Build LLM",
+      "children": [
+        {
+          "id": "mbcgszhy0dv9h3oz0bil",
+          "title": "YT",
+          "children": [],
+          "expanded": false,
+          "parentId": "mbcgsi7s3l1nk8xx9p2"
+        }
+      ],
+      "expanded": true,
+      "parentId": null
     }
   ],
   "currentTopic": {
-    "id": "mbb0f1wtq4qtvll6nbi",
-    "title": "New Topic",
+    "id": "mbb0udzabjfeklwt54n",
+    "title": "YT - Pruning and Distillation Best Practices: The Minitron Approach Explained",
     "children": [],
-    "expanded": false,
-    "parentId": null
+    "expanded": true,
+    "parentId": "mbb0f1wtq4qtvll6nbi"
   },
   "studyMaterials": [
     {
-      "id": "mbb0f6sbw8mtujipayg",
-      "topicId": "mbb0f1wtq4qtvll6nbi",
-      "type": "pdf",
-      "title": "AToken is Worth over 1,000 Tokens- Efficient Knowledge Distillation through Low-Rank Clone.pdf",
-      "displayName": "AToken is Worth over 1,000 Tokens- Efficient Knowledge Distillation through Low-Rank Clone.pdf",
-      "filename": "4b88eade-068c-4a47-b29f-27b11e70d32d-AToken is Worth over 1,000 Tokens- Efficient Knowledge Distillation through Low-Rank Clone.pdf",
-      "isPersistent": true,
-      "needsReupload": false,
-      "createdAt": "2025-05-30T16:20:52.422Z"
+      "id": "mbb1otd2psn6413wpo",
+      "topicId": "mbb0udzabjfeklwt54n",
+      "type": "link",
+      "title": "Pruning and Distillation Best Practices: The Minitron Approach Explained",
+      "createdAt": "2025-05-30T16:56:21.158Z",
+      "url": "https://www.youtube.com/watch?v=eJs-8IDHJ3w"
+    },
+    {
+      "id": "mbcgtpwwzl2clhpptxp",
+      "topicId": "mbcgszhy0dv9h3oz0bil",
+      "type": "link",
+      "title": "Build a Small Language Model (SLM) From Scratch",
+      "createdAt": "2025-05-31T16:47:50.384Z",
+      "url": "https://www.youtube.com/watch?v=pOFcwcwtv3k"
     }
   ],
   "visualizations": [],
   "contentLinks": [],
-  "visualizationNotes": [],
+  "visualizationNotes": [
+    {
+      "id": "mbb2e8bbytedocvcc5",
+      "topicId": "mbb0udzabjfeklwt54n",
+      "title": "Pruning and Distillation Best Practices: The Minitron Approach Explained",
+      "content": "<div bis_skin_checked=\"1\">1) LLMs usually have sparse parameters, meaning many of them might not hold much value (zeros). Removing these unnecessary parameters (weights) is called pruning. We also reduce the activation size.</div><div bis_skin_checked=\"1\"><br></div><div bis_skin_checked=\"1\">2) We can speed up the model by reducing the bit-size process known as quantization.</div><div bis_skin_checked=\"1\">Knowledge distillation&nbsp; -&nbsp;</div><div bis_skin_checked=\"1\">&nbsp;</div><div bis_skin_checked=\"1\">For pruning, there are 3 key metrics to determine what to remove:&nbsp;</div><div bis_skin_checked=\"1\">1) Taylor gradient - assessing the importance of the model weights by analyzing their contribution to the loss function. Estimate weight sensitivity and remove that which has minimal impact on performance.</div><div bis_skin_checked=\"1\">2) Cosine similarity—measures how neurons or layers are similar to each other. Highly similar ones can be removed.</div><div bis_skin_checked=\"1\">3) Perplexity - evaluate how well the model predicts samples. Low preplexity means better predictions.</div><div bis_skin_checked=\"1\"><br></div>",
+      "createdAt": "2025-05-30T17:16:06.935Z",
+      "lastModified": "2025-05-30T18:24:34.490Z"
+    }
+  ],
   "leftPanelVisible": true,
   "rightPanelVisible": true,
   "leftPanelWidth": 50,

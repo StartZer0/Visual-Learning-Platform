@@ -26,16 +26,8 @@ const TextContent = ({ material }) => {
         payload: updatedMaterial,
       });
 
-      // Save to backend if available
-      try {
-        const backendAvailable = await apiService.checkHealth();
-        if (backendAvailable) {
-          const currentState = JSON.parse(localStorage.getItem('learningPlatformState') || '{}');
-          await apiService.saveState(currentState);
-        }
-      } catch (backendError) {
-        console.warn('Failed to save to backend:', backendError);
-      }
+      // AppContext will automatically save the state with the updated material
+      // No need to manually save here - this was causing potential persistence issues
 
       setIsEditing(false);
       return true;
