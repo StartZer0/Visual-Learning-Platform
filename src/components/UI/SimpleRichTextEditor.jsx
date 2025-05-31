@@ -99,25 +99,11 @@ const SimpleRichTextEditor = ({
 
         // Upload image to backend
         const uploadResult = await apiService.uploadImage(file);
-        // Store relative path for backend-independent storage
-        const relativePath = `__BACKEND_FILE__${uploadResult.filename}`;
+        const imageUrl = apiService.getFileUrl(uploadResult.filename);
 
-        // Insert image into editor with full URL for immediate display
-        const displayUrl = apiService.getFileUrl(uploadResult.filename);
-        const img = `<img src="${displayUrl}" data-filename="${uploadResult.filename}" alt="Uploaded image" style="max-width: 100%; height: auto; margin: 8px 0; border-radius: 4px;" />`;
+        // Insert image into editor
+        const img = `<img src="${imageUrl}" alt="Uploaded image" style="max-width: 100%; height: auto; margin: 8px 0; border-radius: 4px;" />`;
         document.execCommand('insertHTML', false, img);
-
-        // Replace the display URL with relative path for storage
-        setTimeout(() => {
-          const editorContent = editorRef.current.innerHTML;
-          const updatedContent = editorContent.replace(
-            new RegExp(`src="${displayUrl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}"`, 'g'),
-            `src="${relativePath}"`
-          );
-          editorRef.current.innerHTML = updatedContent;
-          handleContentChange();
-        }, 100);
-
         handleContentChange();
 
         console.log('Image uploaded successfully:', uploadResult.filename);

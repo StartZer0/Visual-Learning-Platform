@@ -207,65 +207,10 @@ export const AppProvider = ({ children }) => {
               backendState.studyMaterials = restoredMaterials;
             }
 
-            // Restore image URLs in rich text content for study materials and visualization notes
-            const restoreImageUrls = (content) => {
-              if (!content) return content;
-
-              console.log('🔍 Restoring image URLs in content:', content);
-
-              // Handle the new backend file format
-              let restoredContent = content;
-
-              // Replace __BACKEND_FILE__ markers with full URLs
-              restoredContent = restoredContent.replace(/src="__BACKEND_FILE__([^"]+)"/g, (match, filename) => {
-                const newUrl = `src="${apiService.getFileUrl(filename)}"`;
-                console.log('🔄 Restored backend file:', match, '→', newUrl);
-                return newUrl;
-              });
-
-              // Also handle legacy relative paths
-              restoredContent = restoredContent.replace(/src="\/api\/files\/([^"]+)"/g, (match, filename) => {
-                const newUrl = `src="${apiService.getFileUrl(filename)}"`;
-                console.log('🔄 Restored relative path:', match, '→', newUrl);
-                return newUrl;
-              });
-
-              // Also handle cases where full URLs might be broken (e.g., wrong port)
-              restoredContent = restoredContent.replace(/src="http:\/\/localhost:\d+\/api\/files\/([^"]+)"/g, (match, filename) => {
-                const newUrl = `src="${apiService.getFileUrl(filename)}"`;
-                console.log('🔄 Restored full URL:', match, '→', newUrl);
-                return newUrl;
-              });
-
-              console.log('✅ Final restored content:', restoredContent);
-              return restoredContent;
-            };
-
-            // Restore images in study materials
-            if (backendState.studyMaterials) {
-              backendState.studyMaterials = backendState.studyMaterials.map(material => {
-                if (material.type === 'text' && material.content) {
-                  return {
-                    ...material,
-                    content: restoreImageUrls(material.content)
-                  };
-                }
-                return material;
-              });
-            }
-
-            // Restore images in visualization notes
-            if (backendState.visualizationNotes) {
-              backendState.visualizationNotes = backendState.visualizationNotes.map(note => {
-                if (note.content) {
-                  return {
-                    ...note,
-                    content: restoreImageUrls(note.content)
-                  };
-                }
-                return note;
-              });
-            }
+            // Since we're using full URLs, no image restoration needed
+            console.log('✅ Loaded state from backend with',
+              backendState.studyMaterials?.length || 0, 'study materials and',
+              backendState.visualizationNotes?.length || 0, 'visualization notes');
 
             dispatch({ type: 'LOAD_STATE', payload: backendState });
             return;

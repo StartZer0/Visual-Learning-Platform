@@ -1,8 +1,70 @@
 {
-  "hash": "f7548de3",
+  "hash": "a91e267b",
   "configHash": "750051bc",
-  "lockfileHash": "e3b0c442",
-  "browserHash": "eb5406e6",
-  "optimized": {},
-  "chunks": {}
+  "lockfileHash": "becbe41b",
+  "browserHash": "e7cffbef",
+  "optimized": {
+    "react": {
+      "src": "../../node_modules/react/index.js",
+      "file": "react.js",
+      "fileHash": "5251b28a",
+      "needsInterop": true
+    },
+    "react-dom/client": {
+      "src": "../../node_modules/react-dom/client.js",
+      "file": "react-dom_client.js",
+      "fileHash": "f679889f",
+      "needsInterop": true
+    },
+    "react-resizable-panels": {
+      "src": "../../node_modules/react-resizable-panels/dist/react-resizable-panels.browser.development.js",
+      "file": "react-resizable-panels.js",
+      "fileHash": "36940bc0",
+      "needsInterop": false
+    },
+    "lucide-react": {
+      "src": "../../node_modules/lucide-react/dist/esm/lucide-react.js",
+      "file": "lucide-react.js",
+      "fileHash": "42093913",
+      "needsInterop": false
+    },
+    "@monaco-editor/react": {
+      "src": "../../node_modules/@monaco-editor/react/dist/index.mjs",
+      "file": "@monaco-editor_react.js",
+      "fileHash": "62b1dea8",
+      "needsInterop": false
+    },
+    "react-pdf": {
+      "src": "../../node_modules/react-pdf/dist/esm/index.js",
+      "file": "react-pdf.js",
+      "fileHash": "97aaa51a",
+      "needsInterop": false
+    },
+    "react-katex": {
+      "src": "../../node_modules/react-katex/dist/react-katex.js",
+      "file": "react-katex.js",
+      "fileHash": "142a0d46",
+      "needsInterop": true
+    }
+  },
+  "chunks": {
+    "http-JOV4RC4V": {
+      "file": "http-JOV4RC4V.js"
+    },
+    "https-XRUYGCQX": {
+      "file": "https-XRUYGCQX.js"
+    },
+    "url-YR7V36UO": {
+      "file": "url-YR7V36UO.js"
+    },
+    "chunk-Z4L4S4OG": {
+      "file": "chunk-Z4L4S4OG.js"
+    },
+    "fs-OZYARV2F": {
+      "file": "fs-OZYARV2F.js"
+    },
+    "chunk-WOOG5QLI": {
+      "file": "chunk-WOOG5QLI.js"
+    }
+  }
 }
