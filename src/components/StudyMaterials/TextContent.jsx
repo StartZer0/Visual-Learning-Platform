@@ -14,6 +14,7 @@ const TextContent = ({ material }) => {
 
   const handleSave = async (content = editContent) => {
     try {
+      console.log('💾 TextContent: Saving content:', content);
       const updatedMaterial = {
         ...material,
         title: editTitle,
@@ -21,6 +22,8 @@ const TextContent = ({ material }) => {
         lastModified: new Date().toISOString(),
       };
 
+      console.log('📊 TextContent: Updated material object:', updatedMaterial);
+      console.log('🚀 TextContent: Dispatching UPDATE_STUDY_MATERIAL');
       dispatch({
         type: 'UPDATE_STUDY_MATERIAL',
         payload: updatedMaterial,
@@ -29,7 +32,7 @@ const TextContent = ({ material }) => {
       setIsEditing(false);
       return true;
     } catch (error) {
-      console.error('Failed to save content:', error);
+      console.error('❌ TextContent: Failed to save content:', error);
       throw error;
     }
   };

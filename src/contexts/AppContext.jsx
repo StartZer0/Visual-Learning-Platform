@@ -252,17 +252,36 @@ export const AppProvider = ({ children }) => {
         })
       };
 
-      console.log('🔍 Saving state with visualization notes:', stateToSave.visualizationNotes?.length || 0, 'notes');
+      console.log('🔍 AppContext: Saving state with:', {
+        studyMaterials: stateToSave.studyMaterials?.length || 0,
+        visualizationNotes: stateToSave.visualizationNotes?.length || 0,
+        textMaterials: stateToSave.studyMaterials?.filter(m => m.type === 'text').length || 0
+      });
+
+      // Log text materials with content
+      const textMaterials = stateToSave.studyMaterials?.filter(m => m.type === 'text') || [];
+      textMaterials.forEach((material, index) => {
+        console.log(`📄 AppContext: Text material ${index + 1}:`, {
+          id: material.id,
+          title: material.title,
+          contentLength: material.content?.length || 0,
+          hasImages: material.content?.includes('<img') || false,
+          content: material.content
+        });
+      });
 
       // Try to save to backend first
       try {
         const backendAvailable = await apiService.checkHealth();
         if (backendAvailable) {
+          console.log('💾 AppContext: Saving to backend...');
           await apiService.saveState(stateToSave);
-          console.log('State saved to backend');
+          console.log('✅ AppContext: State saved to backend successfully');
+        } else {
+          console.warn('⚠️ AppContext: Backend not available');
         }
       } catch (backendError) {
-        console.warn('Failed to save to backend:', backendError);
+        console.error('❌ AppContext: Failed to save to backend:', backendError);
       }
 
       // Always save to localStorage as backup

@@ -54,11 +54,13 @@ const StudyPanel = () => {
 
     if (newItemType === 'text') {
       newItem.content = newItemContent;
-      console.log('💾 Saving new text content:', newItemContent);
+      console.log('💾 StudyPanel: Saving new text content:', newItemContent);
+      console.log('📊 StudyPanel: New item object:', newItem);
     } else if (newItemType === 'link') {
       newItem.url = newItemUrl;
     }
 
+    console.log('🚀 StudyPanel: Dispatching ADD_STUDY_MATERIAL with:', newItem);
     dispatch({ type: 'ADD_STUDY_MATERIAL', payload: newItem });
     setShowAddModal(false);
   };

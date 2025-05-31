@@ -37,6 +37,7 @@ const SimpleRichTextEditor = ({
     if (!editorRef.current) return;
 
     const content = editorRef.current.innerHTML;
+    console.log('📝 Content changed, new value:', content);
     onChange?.(content);
 
     // Auto-save functionality
@@ -47,11 +48,13 @@ const SimpleRichTextEditor = ({
 
       autoSaveTimeoutRef.current = setTimeout(async () => {
         try {
+          console.log('💾 Auto-saving content:', content);
           setIsSaving(true);
           await onSave(content);
           setLastSaved(new Date());
+          console.log('✅ Auto-save completed');
         } catch (error) {
-          console.error('Auto-save failed:', error);
+          console.error('❌ Auto-save failed:', error);
         } finally {
           setIsSaving(false);
         }
@@ -98,15 +101,24 @@ const SimpleRichTextEditor = ({
         }
 
         // Upload image to backend
+        console.log('🔄 Starting image upload for file:', file.name);
         const uploadResult = await apiService.uploadImage(file);
+        console.log('✅ Image upload result:', uploadResult);
+
         const imageUrl = apiService.getFileUrl(uploadResult.filename);
+        console.log('🔗 Generated image URL:', imageUrl);
 
         // Insert image into editor
         const img = `<img src="${imageUrl}" alt="Uploaded image" style="max-width: 100%; height: auto; margin: 8px 0; border-radius: 4px;" />`;
+        console.log('📝 Inserting image HTML:', img);
+
         document.execCommand('insertHTML', false, img);
         handleContentChange();
 
-        console.log('Image uploaded successfully:', uploadResult.filename);
+        // Log the current editor content after image insertion
+        console.log('📄 Editor content after image insertion:', editorRef.current.innerHTML);
+
+        console.log('✅ Image uploaded successfully:', uploadResult.filename);
       } catch (error) {
         console.error('Image upload failed:', error);
         alert(`Failed to upload image: ${error.message}`);
