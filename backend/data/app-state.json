@@ -54,11 +54,11 @@
     }
   ],
   "currentTopic": {
-    "id": "mbb1ob8qzqfx1rzzi7",
-    "title": "s",
+    "id": "mbd280k39gadubwd6h",
+    "title": "Understanding Multimodal LLMs",
     "children": [],
     "expanded": false,
-    "parentId": "mbb0f1wtq4qtvll6nbi"
+    "parentId": "mbd27jy9kmju14a1e3f"
   },
   "studyMaterials": [
     {
@@ -112,13 +112,13 @@
       "id": "mbd2b2x94zzuycy2s3q",
       "topicId": "mbd280k39gadubwd6h",
       "title": "Notes",
-      "content": "<b><i><u>Common approaches to building multimodal LLMs</u></i></b><div bis_skin_checked=\"1\"><b><i><u><br></u></i></b></div><div bis_skin_checked=\"1\">Method A: Unified Embedding Decoder Architecture approach -&nbsp;utilizes a single decoder model, much like an unmodified LLM architecture such as GPT-2 or Llama 3.2. In this approach, images are converted into tokens with the same embedding size as the original text tokens, allowing the LLM to process both text and image input tokens together after concatenation.</div><div bis_skin_checked=\"1\"><p class=\"p1\" style=\"font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-size-adjust: none; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-variant-emoji: normal; font-stretch: normal; font-size: 10px; line-height: normal; font-family: Helvetica; color: rgb(0, 0, 0);\"><i>𝑝 = 1</i></p><p class=\"p2\" style=\"font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-size-adjust: none; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-variant-emoji: normal; font-stretch: normal; font-size: 7.5px; line-height: normal; font-family: Helvetica; color: rgb(0, 0, 0);\"><br></p></div><div bis_skin_checked=\"1\"><div bis_skin_checked=\"1\" style=\"\">Method B: Cross-modality Attention Architecture approach -&nbsp;employs a cross-attention mechanism to integrate image and text embeddings directly within the attention layer.</div><div bis_skin_checked=\"1\" style=\"\"><br></div><div bis_skin_checked=\"1\"><br></div></div>",
+      "content": "<b><i><u>Common approaches to building multimodal LLMs</u></i></b><div bis_skin_checked=\"1\"><b><i><u><br></u></i></b></div><div bis_skin_checked=\"1\">Method A: Unified Embedding Decoder<span style=\"padding: 2px 0px; border-radius: 2px;\"> Architecture approach</span> -&nbsp;utilizes a single decoder model, much like an unmodified LLM architecture such as GPT-2 or Llama 3.2. In this approach, images are converted into tokens with the same embedding size as the original text tokens, allowing the LLM to process both text and image input tokens together after <span style=\"background-color: rgb(255, 255, 0); padding: 2px 0px; border-radius: 2px;\">concatenation.</span></div><div bis_skin_checked=\"1\"><p class=\"p2\" style=\"font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-size-adjust: none; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-variant-emoji: normal; font-stretch: normal; font-size: 7.5px; line-height: normal; font-family: Helvetica; color: rgb(0, 0, 0);\"><br></p></div><div bis_skin_checked=\"1\"><div bis_skin_checked=\"1\" style=\"\">Method B: Cross-modality Attention Architecture approach -&nbsp;employs a cross-attention mechanism to integrate image and text embeddings directly within the attention layer.</div><div bis_skin_checked=\"1\" style=\"\"><br></div><div bis_skin_checked=\"1\">&nbsp;<br></div></div>",
       "createdAt": "2025-06-01T02:49:12.333Z",
-      "lastModified": "2025-06-01T03:01:41.409Z"
+      "lastModified": "2025-06-01T03:18:28.921Z"
     }
   ],
   "leftPanelVisible": true,
   "rightPanelVisible": true,
   "leftPanelWidth": 50,
-  "sidebarCollapsed": false
+  "sidebarCollapsed": true
 }

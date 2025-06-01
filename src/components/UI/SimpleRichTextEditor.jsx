@@ -3,7 +3,7 @@ import {
   Bold, Italic, Underline, Strikethrough,
   List, ListOrdered, AlignLeft, AlignCenter, AlignRight,
   Image as ImageIcon, Link, Save, Loader2, Type, Move, RotateCcw,
-  Maximize2, Minimize2, Square
+  Maximize2, Minimize2, Square, Highlighter, Palette
 } from 'lucide-react';
 import apiService from '../../services/api';
 import Button from './Button';
@@ -30,6 +30,20 @@ const SimpleRichTextEditor = ({
   const [selectedImage, setSelectedImage] = useState(null);
   const [showImageControls, setShowImageControls] = useState(false);
   const [imageControlsPosition, setImageControlsPosition] = useState({ top: 0, left: 0 });
+
+  // Text highlighting state
+  const [showHighlightColors, setShowHighlightColors] = useState(false);
+  const [selectedHighlightColor, setSelectedHighlightColor] = useState('#ffff00');
+
+  // Highlight colors
+  const highlightColors = [
+    { name: 'Yellow', value: '#ffff00', bg: 'bg-yellow-200' },
+    { name: 'Green', value: '#90EE90', bg: 'bg-green-200' },
+    { name: 'Blue', value: '#87CEEB', bg: 'bg-blue-200' },
+    { name: 'Pink', value: '#FFB6C1', bg: 'bg-pink-200' },
+    { name: 'Orange', value: '#FFA500', bg: 'bg-orange-200' },
+    { name: 'Purple', value: '#DDA0DD', bg: 'bg-purple-200' }
+  ];
 
   // Initialize editor content
   useEffect(() => {
@@ -77,11 +91,16 @@ const SimpleRichTextEditor = ({
         setShowImageControls(false);
         setSelectedImage(null);
       }
+
+      // Hide highlight color picker when clicking elsewhere
+      if (showHighlightColors && !e.target.closest('.relative')) {
+        setShowHighlightColors(false);
+      }
     };
 
     document.addEventListener('click', handleClickOutside);
     return () => document.removeEventListener('click', handleClickOutside);
-  }, [selectedImage]);
+  }, [selectedImage, showHighlightColors]);
 
   // Handle content change
   const handleContentChange = useCallback(() => {
@@ -178,6 +197,41 @@ const SimpleRichTextEditor = ({
   // Format text
   const formatText = (command, value = null) => {
     document.execCommand(command, false, value);
+    editorRef.current?.focus();
+    handleContentChange();
+  };
+
+  // Highlight text
+  const highlightText = (color = selectedHighlightColor) => {
+    const selection = window.getSelection();
+    if (selection.rangeCount === 0 || selection.toString().trim() === '') {
+      alert('Please select some text to highlight');
+      return;
+    }
+
+    // Create a span element with the highlight color
+    const span = document.createElement('span');
+    span.style.backgroundColor = color;
+    span.style.padding = '2px 0';
+    span.style.borderRadius = '2px';
+
+    try {
+      // Surround the selection with the highlight span
+      selection.getRangeAt(0).surroundContents(span);
+      selection.removeAllRanges();
+      handleContentChange();
+    } catch (error) {
+      // Fallback method for complex selections
+      document.execCommand('hiliteColor', false, color);
+      handleContentChange();
+    }
+
+    editorRef.current?.focus();
+  };
+
+  // Remove highlight
+  const removeHighlight = () => {
+    document.execCommand('hiliteColor', false, 'transparent');
     editorRef.current?.focus();
     handleContentChange();
   };
@@ -403,6 +457,68 @@ const SimpleRichTextEditor = ({
 
         <div className="w-px h-6 bg-gray-300 dark:bg-gray-600 mx-1" />
 
+        {/* Text Highlighting */}
+        <div className="relative">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => highlightText()}
+            icon={<Highlighter className="h-4 w-4" />}
+            title="Highlight selected text"
+            disabled={disabled}
+          />
+        </div>
+        <div className="relative">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setShowHighlightColors(!showHighlightColors)}
+            icon={<Palette className="h-4 w-4" />}
+            title="Choose highlight color"
+            disabled={disabled}
+          />
+
+          {/* Highlight Color Picker */}
+          {showHighlightColors && (
+            <div className="absolute top-full left-0 mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg p-2 z-50">
+              <div className="grid grid-cols-3 gap-1">
+                {highlightColors.map((color) => (
+                  <button
+                    key={color.value}
+                    onClick={() => {
+                      setSelectedHighlightColor(color.value);
+                      highlightText(color.value);
+                      setShowHighlightColors(false);
+                    }}
+                    className={`w-8 h-8 rounded border-2 ${
+                      selectedHighlightColor === color.value
+                        ? 'border-gray-800 dark:border-gray-200'
+                        : 'border-gray-300 dark:border-gray-600'
+                    } hover:scale-110 transition-transform`}
+                    style={{ backgroundColor: color.value }}
+                    title={`Highlight with ${color.name}`}
+                  />
+                ))}
+              </div>
+              <div className="mt-2 pt-2 border-t border-gray-200 dark:border-gray-700">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
+                    removeHighlight();
+                    setShowHighlightColors(false);
+                  }}
+                  className="w-full text-xs"
+                >
+                  Remove Highlight
+                </Button>
+              </div>
+            </div>
+          )}
+        </div>
+
+        <div className="w-px h-6 bg-gray-300 dark:bg-gray-600 mx-1" />
+
         {/* Media & Links */}
         <Button
           variant="ghost"
@@ -527,6 +643,7 @@ const SimpleRichTextEditor = ({
           <span>• Use the toolbar for formatting</span>
           <span>• Click image icon to upload images</span>
           <span>• Click images to resize them</span>
+          <span>• Select text and use highlighter for text highlighting</span>
           <span>• Keyboard shortcuts: Ctrl+B (bold), Ctrl+I (italic), Ctrl+U (underline)</span>
           {autoSave && <span>• Auto-saves every {autoSaveDelay / 1000}s</span>}
         </div>
