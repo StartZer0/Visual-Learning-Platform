@@ -36,14 +36,29 @@
       ],
       "expanded": true,
       "parentId": null
+    },
+    {
+      "id": "mbd27jy9kmju14a1e3f",
+      "title": "Artitcles",
+      "children": [
+        {
+          "id": "mbd280k39gadubwd6h",
+          "title": "Understanding Multimodal LLMs",
+          "children": [],
+          "expanded": false,
+          "parentId": "mbd27jy9kmju14a1e3f"
+        }
+      ],
+      "expanded": true,
+      "parentId": null
     }
   ],
   "currentTopic": {
-    "id": "mbcgszhy0dv9h3oz0bil",
-    "title": "YT",
+    "id": "mbb1ob8qzqfx1rzzi7",
+    "title": "s",
     "children": [],
     "expanded": false,
-    "parentId": "mbcgsi7s3l1nk8xx9p2"
+    "parentId": "mbb0f1wtq4qtvll6nbi"
   },
   "studyMaterials": [
     {
@@ -61,6 +76,25 @@
       "title": "Build a Small Language Model (SLM) From Scratch",
       "createdAt": "2025-05-31T16:47:50.384Z",
       "url": "https://www.youtube.com/watch?v=pOFcwcwtv3k"
+    },
+    {
+      "id": "mbd29cwiwo02gq497f",
+      "topicId": "mbd280k39gadubwd6h",
+      "type": "pdf",
+      "title": "Understanding Multimodal LLMs - by Sebastian Raschka, PhD.pdf",
+      "displayName": "Understanding Multimodal LLMs - by Sebastian Raschka, PhD.pdf",
+      "filename": "54bc748e-baf3-4c6b-876d-edead55987ed-Understanding Multimodal LLMs - by Sebastian Raschka, PhD.pdf",
+      "isPersistent": true,
+      "needsReupload": false,
+      "createdAt": "2025-06-01T02:47:52.091Z"
+    },
+    {
+      "id": "mbd29u2uftjdlhtwhfp",
+      "topicId": "mbd280k39gadubwd6h",
+      "type": "link",
+      "title": "link to the article",
+      "createdAt": "2025-06-01T02:48:14.215Z",
+      "url": "https://magazine.sebastianraschka.com/p/understanding-multimodal-llms"
     }
   ],
   "visualizations": [],
@@ -72,7 +106,15 @@
       "title": "Pruning and Distillation Best Practices: The Minitron Approach Explained",
       "content": "<div bis_skin_checked=\"1\">1) LLMs usually have sparse parameters, meaning many of them might not hold much value (zeros). Removing these unnecessary parameters (weights) is called pruning. We also reduce the activation size.</div><div bis_skin_checked=\"1\"><br></div><div bis_skin_checked=\"1\">2) We can speed up the model by reducing the bit-size process known as quantization.</div><div bis_skin_checked=\"1\">Knowledge distillation&nbsp; -&nbsp;</div><div bis_skin_checked=\"1\">&nbsp;</div><div bis_skin_checked=\"1\">For pruning, there are 3 key metrics to determine what to remove:&nbsp;</div><div bis_skin_checked=\"1\">1) Taylor gradient - assessing the importance of the model weights by analyzing their contribution to the loss function. Estimate weight sensitivity and remove that which has minimal impact on performance.</div><div bis_skin_checked=\"1\">2) Cosine similarity—measures how neurons or layers are similar to each other. Highly similar ones can be removed.</div><div bis_skin_checked=\"1\">3) Perplexity - evaluate how well the model predicts samples. Low preplexity means better predictions.</div><div bis_skin_checked=\"1\"><br></div>",
       "createdAt": "2025-05-30T17:16:06.935Z",
-      "lastModified": "2025-05-30T18:24:34.490Z"
+      "lastModified": "2025-05-31T17:52:31.782Z"
+    },
+    {
+      "id": "mbd2b2x94zzuycy2s3q",
+      "topicId": "mbd280k39gadubwd6h",
+      "title": "Notes",
+      "content": "<b><i><u>Common approaches to building multimodal LLMs</u></i></b><div bis_skin_checked=\"1\"><b><i><u><br></u></i></b></div><div bis_skin_checked=\"1\">Method A: Unified Embedding Decoder Architecture approach -&nbsp;utilizes a single decoder model, much like an unmodified LLM architecture such as GPT-2 or Llama 3.2. In this approach, images are converted into tokens with the same embedding size as the original text tokens, allowing the LLM to process both text and image input tokens together after concatenation.</div><div bis_skin_checked=\"1\"><p class=\"p1\" style=\"font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-size-adjust: none; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-variant-emoji: normal; font-stretch: normal; font-size: 10px; line-height: normal; font-family: Helvetica; color: rgb(0, 0, 0);\"><i>𝑝 = 1</i></p><p class=\"p2\" style=\"font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-size-adjust: none; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-variant-emoji: normal; font-stretch: normal; font-size: 7.5px; line-height: normal; font-family: Helvetica; color: rgb(0, 0, 0);\"><br></p></div><div bis_skin_checked=\"1\"><div bis_skin_checked=\"1\" style=\"\">Method B: Cross-modality Attention Architecture approach -&nbsp;employs a cross-attention mechanism to integrate image and text embeddings directly within the attention layer.</div><div bis_skin_checked=\"1\" style=\"\"><br></div><div bis_skin_checked=\"1\"><br></div></div>",
+      "createdAt": "2025-06-01T02:49:12.333Z",
+      "lastModified": "2025-06-01T03:01:41.409Z"
     }
   ],
   "leftPanelVisible": true,
