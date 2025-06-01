@@ -1,0 +1,93 @@
+/* PDF Viewer Text Layer Alignment Fixes */
+
+.pdf-page-container {
+  position: relative;
+  display: inline-block;
+}
+
+/* Ensure the PDF page container is positioned correctly */
+.pdf-page-container .react-pdf__Page {
+  position: relative !important;
+  display: block !important;
+}
+
+/* Fix text layer positioning to overlay exactly on the canvas */
+.pdf-page-container .react-pdf__Page__textContent {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  overflow: hidden !important;
+  opacity: 0 !important;
+  line-height: 1.0 !important;
+  pointer-events: auto !important;
+  z-index: 2 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  background: transparent !important;
+}
+
+/* Ensure canvas layer is positioned correctly */
+.pdf-page-container .react-pdf__Page__canvas {
+  position: relative !important;
+  z-index: 1 !important;
+  display: block !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Style individual text spans for proper positioning */
+.pdf-page-container .react-pdf__Page__textContent span {
+  color: transparent !important;
+  position: absolute !important;
+  white-space: pre !important;
+  cursor: text !important;
+  transform-origin: 0% 0% !important;
+  user-select: text !important;
+  -webkit-user-select: text !important;
+  -moz-user-select: text !important;
+  -ms-user-select: text !important;
+}
+
+/* Ensure text selection works properly */
+.pdf-page-container .react-pdf__Page__textContent span::selection {
+  background: rgba(0, 123, 255, 0.3) !important;
+}
+
+.pdf-page-container .react-pdf__Page__textContent span::-moz-selection {
+  background: rgba(0, 123, 255, 0.3) !important;
+}
+
+/* Fix for highlighting mode */
+.pdf-highlighting .react-pdf__Page__textContent {
+  opacity: 0.1 !important;
+}
+
+.pdf-highlighting .react-pdf__Page__textContent span {
+  cursor: crosshair !important;
+}
+
+/* Ensure proper text layer dimensions match canvas */
+.pdf-page-container .react-pdf__Page__textContent {
+  width: 100% !important;
+  height: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* Remove any default margins/padding that might cause misalignment */
+.pdf-page-container .react-pdf__Page__textContent * {
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  outline: none !important;
+}
+
+/* Ensure the page wrapper doesn't add extra space */
+.pdf-page-container .react-pdf__Page__wrapper {
+  position: relative !important;
+  display: block !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}

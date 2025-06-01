@@ -8,6 +8,7 @@ import { useApp } from '../../contexts/AppContext';
 import apiService from '../../services/api';
 import Button from '../UI/Button';
 import EditablePDFTitle from './EditablePDFTitle';
+import './PDFViewer.css';
 
 // Set up PDF.js worker
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
@@ -115,13 +116,14 @@ const PDFViewer = ({ material }) => {
     const range = selection.getRangeAt(0);
     const selectedTextContent = selection.toString().trim();
 
-    // Get the position relative to the page
-    const pageElement = pageRef.current;
-    if (!pageElement) return;
+    // Get the position relative to the PDF page container
+    const pageContainer = pageRef.current?.querySelector('.pdf-page-container');
+    if (!pageContainer) return;
 
-    const pageRect = pageElement.getBoundingClientRect();
+    const pageRect = pageContainer.getBoundingClientRect();
     const rangeRect = range.getBoundingClientRect();
 
+    // Calculate position relative to the PDF page, accounting for the container
     const annotation = {
       id: Date.now().toString(),
       type: 'highlight',
@@ -422,23 +424,29 @@ const PDFViewer = ({ material }) => {
             <div className="flex flex-col items-center">
               <div
                 ref={pageRef}
-                className="relative"
+                className={`relative ${isHighlighting ? 'pdf-highlighting' : ''}`}
                 onMouseUp={handleTextSelection}
                 style={{ userSelect: isHighlighting ? 'text' : 'auto' }}
               >
-                <Document
-                  file={pdfUrl}
-                  onLoadSuccess={onDocumentLoadSuccess}
-                  onLoadError={onDocumentLoadError}
-                  loading=""
-                >
-                  <Page
-                    pageNumber={pageNumber}
-                    scale={scale}
-                    renderTextLayer={true}
-                    renderAnnotationLayer={false}
-                  />
-                </Document>
+                <div className="pdf-page-container">
+                  <Document
+                    file={pdfUrl}
+                    onLoadSuccess={onDocumentLoadSuccess}
+                    onLoadError={onDocumentLoadError}
+                    loading=""
+                    options={{
+                      cMapUrl: `//unpkg.com/pdfjs-dist@${pdfjs.version}/cmaps/`,
+                      cMapPacked: true,
+                    }}
+                  >
+                    <Page
+                      pageNumber={pageNumber}
+                      scale={scale}
+                      renderTextLayer={true}
+                      renderAnnotationLayer={false}
+                    />
+                  </Document>
+                </div>
 
                 {/* Annotation Overlays */}
                 {annotations

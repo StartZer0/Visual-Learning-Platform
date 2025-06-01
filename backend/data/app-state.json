@@ -78,23 +78,23 @@
       "url": "https://www.youtube.com/watch?v=pOFcwcwtv3k"
     },
     {
-      "id": "mbd29cwiwo02gq497f",
-      "topicId": "mbd280k39gadubwd6h",
-      "type": "pdf",
-      "title": "Understanding Multimodal LLMs - by Sebastian Raschka, PhD.pdf",
-      "displayName": "Understanding Multimodal LLMs - by Sebastian Raschka, PhD.pdf",
-      "filename": "54bc748e-baf3-4c6b-876d-edead55987ed-Understanding Multimodal LLMs - by Sebastian Raschka, PhD.pdf",
-      "isPersistent": true,
-      "needsReupload": false,
-      "createdAt": "2025-06-01T02:47:52.091Z"
-    },
-    {
       "id": "mbd29u2uftjdlhtwhfp",
       "topicId": "mbd280k39gadubwd6h",
       "type": "link",
       "title": "link to the article",
       "createdAt": "2025-06-01T02:48:14.215Z",
       "url": "https://magazine.sebastianraschka.com/p/understanding-multimodal-llms"
+    },
+    {
+      "id": "mbd3fpjhny07x101nmo",
+      "topicId": "mbd280k39gadubwd6h",
+      "type": "pdf",
+      "title": "Understanding Multimodal LLMs - by Sebastian Raschka, PhD.pdf",
+      "displayName": "Understanding Multimodal LLMs - by Sebastian Raschka, PhD.pdf",
+      "filename": "fa0c9fc4-3318-4616-bc11-33d056b005dc-Understanding Multimodal LLMs - by Sebastian Raschka, PhD.pdf",
+      "isPersistent": true,
+      "needsReupload": false,
+      "createdAt": "2025-06-01T03:20:47.942Z"
     }
   ],
   "visualizations": [],
